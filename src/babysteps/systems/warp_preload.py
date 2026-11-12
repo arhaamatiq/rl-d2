@@ -13,6 +13,17 @@ import os
 import time
 
 
+def set_parallel_loading(workers: int | None = None) -> int:
+  """Raise Warp's module-loading thread count (default min(cpu, 4)). mjlab's graph
+  capture calls ``force_load`` with the config default, so this alone parallelizes
+  the bulk of the cold-start compilation."""
+  import warp as wp
+
+  n = workers or max(1, (os.cpu_count() or 4))
+  wp.config.load_module_max_workers = n
+  return n
+
+
 def preload(device: str = "cuda:0", workers: int | None = None) -> dict:
   import warp as wp
 

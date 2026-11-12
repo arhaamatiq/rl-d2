@@ -91,3 +91,13 @@ the least discriminating of the five at convergence; it still bites early in tra
 (b) on flat ground the two initial headings of the sim-to-sim check give identical CPU
 trajectories, so its 16 episodes are effectively 8 distinct ones. Both are candidates
 for a v2 bar, which would be versioned and never applied retroactively.
+
+## D10. Cold-start compilation: tried, mostly not shippable
+Stock cold start on the reference host spends ~42 s compiling ~50 MuJoCo Warp modules,
+lazily and one at a time. Raising Warp's loader thread count changes little (first
+iteration at 83.8 s vs 91.8 s for the graphed runner, within noise of one run) because
+most modules are compiled on first launch inside mjlab code, not through the loader.
+An explicit parallel `wp.force_load` before env construction breaks mjlab's own Warp
+graph capture during `Simulation.__init__` ("operation would make the legacy stream
+depend on a capturing blocking stream" from a module re-initialized mid-capture), so it
+is not used. Shipping precompiled kernels would defeat the cold-cache rule.
