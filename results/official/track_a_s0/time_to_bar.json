@@ -1,0 +1,22 @@
+{
+  "run_dir": "runs/official/track_a_s0",
+  "bar_version": "v1",
+  "bar_sha256": "3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058",
+  "frozen": true,
+  "n_evaluated": 12,
+  "eval_wall_s": 78.83828592300415,
+  "passed": true,
+  "first_pass_k": 8,
+  "time_to_bar_s": 281.6401963233948,
+  "time_to_bar_train_s": 241.90749788284302,
+  "iteration": 601,
+  "env_steps": 59179008,
+  "metrics": {
+    "lin_err": 0.10443244129419327,
+    "yaw_err": 0.10754477977752686,
+    "fall_free": 1.0,
+    "push_success": 0.9921875,
+    "sim2sim_success": 1.0,
+    "sim2sim_lin_err": 0.0873729625126913
+  }
+}

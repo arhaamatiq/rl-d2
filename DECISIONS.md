@@ -113,3 +113,11 @@ fine tracking on both axes, tighter stock yaw kernel, turn-in-place curriculum, 
 yaw posture, no heading envs, KL 0.03, init std 0.5, sparser training pushes.
 Measured cold start of the graphed runner on an idle reference host: ~43 s (an earlier
 84-92 s reading was taken on a pod that was also running the live evaluator).
+
+## D12. Ablation logistics and one discarded run
+Ablation rows run cold-start on reference-class hosts (Ryzen 9 7950X + RTX 4090: the
+official pod, a second identical pod, and a 2-GPU pod with one run per GPU and separate
+compilation-cache roots). An evaluation process was accidentally started on the GPU of
+the in-progress `abl_kl02_sym_e8_bf16` seed-0 run (a watcher script matched its own
+launch command). The run was discarded and re-run from scratch; no other run overlapped
+any other workload (checked with a process audit of every pod).

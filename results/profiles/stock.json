@@ -1,0 +1,82 @@
+{
+  "iterations": 11,
+  "window_s": 6.209298315,
+  "s_per_iter": 0.564481665,
+  "kernel_coverage": 0.5757325809848773,
+  "host_ms_per_iter": {
+    "env_managers": 359.80964754545454,
+    "rollout_other": 56.43442372727273,
+    "update_forward_loss": 30.418559090909092,
+    "backprop": 27.169908818181817,
+    "simulation": 24.711515,
+    "policy_inference": 14.918917363636364,
+    "logging_ckpt": 14.825033000000001,
+    "optimizer_step": 11.459858181818182,
+    "rollout_storage": 11.448349545454546,
+    "host_sync_item": 8.657217363636365,
+    "other": 2.3723335454545453,
+    "gae": 2.1526447272727274,
+    "outside_ranges": 0.05270972727272727,
+    "loop_other": 0.05054736363636363
+  },
+  "host_ms_per_iter_by_range": {
+    "env.managers.RewardManager.compute": 213.46696745454545,
+    "rollout.env": 47.306,
+    "env.reset_idx": 41.42112154545455,
+    "update": 30.418559090909092,
+    "update.backward": 27.169908818181817,
+    "env.managers.scene.update": 24.512740272727275,
+    "env.managers.EventManager.apply": 23.452853727272725,
+    "env.managers.ObservationManager.compute": 22.676602272727273,
+    "env.sense": 17.362867545454545,
+    "env.managers.CommandManager.compute": 15.40008090909091,
+    "rollout.policy": 14.918917363636364,
+    "log": 14.825033000000001,
+    "rollout.storage": 11.448349545454546,
+    "rollout": 9.128423727272727,
+    "sync.item": 8.657217363636365,
+    "env.managers.scene.write": 7.611394545454545,
+    "update.clip_grad": 6.308534090909091,
+    "env.physics": 5.685023272727272,
+    "update.optim": 5.151324090909092,
+    "env.managers.TerminationManager.compute": 4.810661,
+    "env.managers.ActionManager.apply_action": 3.370595090909091,
+    "gae": 2.1526447272727274,
+    "env.managers.MetricsManager.compute": 1.6841294545454546,
+    "env.forward": 1.663624181818182,
+    "cub::DeviceSelect::Flagged": 1.4907931818181817
+  },
+  "gpu_kernel_ms_per_iter": {
+    "simulation": 236.04328754545452,
+    "other": 39.82597254545454,
+    "env_managers": 30.089983818181818,
+    "update_forward_loss": 9.093594272727273,
+    "policy_inference": 4.072988272727273,
+    "optimizer_step": 2.3968774545454545,
+    "rollout_storage": 1.715423,
+    "logging_ckpt": 0.9413125454545455,
+    "rollout_other": 0.39803081818181824,
+    "gae": 0.39544154545454546,
+    "backprop": 0.017574090909090907
+  },
+  "kernels_per_iter": 27898.454545454544,
+  "graph_launches_per_iter": 168.0,
+  "memcpy_per_iter": {
+    "DtoD": {
+      "count": 1394.090909090909,
+      "ms": 2.0817635454545456,
+      "MB": 839.7455450909091
+    },
+    "DtoH": {
+      "count": 717.9090909090909,
+      "ms": 0.7943571818181817,
+      "MB": 0.6323463636363637
+    },
+    "HtoD": {
+      "count": 1560.3636363636363,
+      "ms": 0.5279893636363636,
+      "MB": 0.009137454545454546
+    }
+  },
+  "sync_api_calls_per_iter": 2278.2727272727275
+}

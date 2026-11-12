@@ -1,0 +1,36 @@
+{
+  "iterations": 11,
+  "window_s": 3.914798533,
+  "s_per_iter": 0.35589077572727273,
+  "kernel_coverage": 0.9990135206275761,
+  "host_ms_per_iter": {
+    "rollout_other": 192.72402954545453,
+    "other": 137.5122770909091,
+    "logging_ckpt": 24.417691454545455,
+    "loop_other": 1.1796078181818181,
+    "outside_ranges": 0.05716981818181818
+  },
+  "host_ms_per_iter_by_range": {
+    "rollout(graph)": 192.72402954545453,
+    "update(graph)": 137.50243172727275,
+    "ckpt": 24.417691454545455,
+    "iter": 1.1796078181818181,
+    "wait.prev_stats": 0.009845363636363636
+  },
+  "gpu_kernel_ms_per_iter": {
+    "rollout_other": 299.924029,
+    "other": 73.09377427272727,
+    "loop_other": 0.0014225454545454543,
+    "logging_ckpt": 0.00012218181818181818
+  },
+  "kernels_per_iter": 4.818181818181818,
+  "graph_launches_per_iter": 1.9090909090909092,
+  "memcpy_per_iter": {
+    "DtoH": {
+      "count": 1.8181818181818181,
+      "ms": 0.005230545454545454,
+      "MB": 0.07980109090909092
+    }
+  },
+  "sync_api_calls_per_iter": 1.9090909090909092
+}

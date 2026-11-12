@@ -1,0 +1,15 @@
+{"k": 0, "iteration": 0, "env_steps": 98304, "t_wall_s": 40.150620460510254, "t_train_s": 0.37249255180358887, "path": "checkpoints/policy_0000.pt"}
+{"k": 1, "iteration": 77, "env_steps": 7667712, "t_wall_s": 70.22189712524414, "t_train_s": 30.443769216537476, "path": "checkpoints/policy_0001.pt"}
+{"k": 2, "iteration": 149, "env_steps": 14745600, "t_wall_s": 100.29099035263062, "t_train_s": 60.51286244392395, "path": "checkpoints/policy_0002.pt"}
+{"k": 3, "iteration": 222, "env_steps": 21921792, "t_wall_s": 130.48090291023254, "t_train_s": 90.70277500152588, "path": "checkpoints/policy_0003.pt"}
+{"k": 4, "iteration": 296, "env_steps": 29196288, "t_wall_s": 160.7365357875824, "t_train_s": 120.95840787887573, "path": "checkpoints/policy_0004.pt"}
+{"k": 5, "iteration": 372, "env_steps": 36667392, "t_wall_s": 191.11970472335815, "t_train_s": 151.3415768146515, "path": "checkpoints/policy_0005.pt"}
+{"k": 6, "iteration": 448, "env_steps": 44138496, "t_wall_s": 221.39657926559448, "t_train_s": 181.61845135688782, "path": "checkpoints/policy_0006.pt"}
+{"k": 7, "iteration": 524, "env_steps": 51609600, "t_wall_s": 251.78540182113647, "t_train_s": 212.0072739124298, "path": "checkpoints/policy_0007.pt"}
+{"k": 8, "iteration": 599, "env_steps": 58982400, "t_wall_s": 281.8451843261719, "t_train_s": 242.0670564174652, "path": "checkpoints/policy_0008.pt"}
+{"k": 9, "iteration": 674, "env_steps": 66355200, "t_wall_s": 311.9682283401489, "t_train_s": 272.19010043144226, "path": "checkpoints/policy_0009.pt"}
+{"k": 10, "iteration": 749, "env_steps": 73728000, "t_wall_s": 342.154869556427, "t_train_s": 302.37674164772034, "path": "checkpoints/policy_0010.pt"}
+{"k": 11, "iteration": 824, "env_steps": 81100800, "t_wall_s": 372.34953212738037, "t_train_s": 332.5714042186737, "path": "checkpoints/policy_0011.pt"}
+{"k": 12, "iteration": 899, "env_steps": 88473600, "t_wall_s": 402.6040585041046, "t_train_s": 362.82593059539795, "path": "checkpoints/policy_0012.pt"}
+{"k": 13, "iteration": 974, "env_steps": 95846400, "t_wall_s": 432.9217321872711, "t_train_s": 393.14360427856445, "path": "checkpoints/policy_0013.pt"}
+{"k": 14, "iteration": 1012, "env_steps": 99581952, "t_wall_s": 448.3014724254608, "t_train_s": 408.52334451675415, "path": "checkpoints/policy_0014.pt", "final": true}
