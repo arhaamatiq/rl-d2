@@ -86,6 +86,8 @@ class FastTrainer:
     self.ep_stats = torch.zeros(4, device=device)  # sum_ret, sum_len, n_done, n_nan
     self.rollout_graph = None
     self.update_graph = None
+    self.stats_host = [torch.zeros(9, pin_memory=True) for _ in range(2)]
+    self.stats_evt = [torch.cuda.Event() for _ in range(2)]
 
   # ---- graph bodies ------------------------------------------------------------
   def _rollout_body(self) -> None:
@@ -162,17 +164,26 @@ class FastTrainer:
         nvtx.push("recapture")
         self.rollout_graph, _ = capture(self._rollout_body, warmup=0)
         nvtx.pop()
-      nvtx.push("sync.stats")
-      s = torch.cat([self.ep_stats, self.upd.stats]).cpu().tolist()
-      nvtx.pop()
+      # Stats readback without a sync: device->pinned-host copy + event, consumed
+      # one iteration later, so the host can enqueue the next iteration's graphs
+      # while this one is still running.
+      slot = it % 2
+      self.stats_host[slot].copy_(torch.cat([self.ep_stats, self.upd.stats]), non_blocking=True)
+      self.stats_evt[slot].record()
       t1 = time.time()
       env_steps = (it + 1) * steps_per_iter
-      n_done = max(s[2], 1.0)
-      iterlog.write({
-        "it": it, "t_wall_s": clock.wall(), "iter_s": t1 - t0, "env_steps": env_steps,
-        "mean_return": s[0] / n_done, "mean_ep_len": s[1] / n_done, "episodes": s[2],
-        "nan": s[3], "value_loss": s[4], "surrogate": s[5], "entropy": s[6], "kl": s[7], "lr": s[8],
-      })
+      if it > 0:
+        prev = 1 - slot
+        nvtx.push("wait.prev_stats")
+        self.stats_evt[prev].synchronize()
+        nvtx.pop()
+        s = self.stats_host[prev].tolist()
+        n_done = max(s[2], 1.0)
+        iterlog.write({
+          "it": it - 1, "t_wall_s": clock.wall(), "iter_s": t1 - t0, "env_steps": env_steps - steps_per_iter,
+          "mean_return": s[0] / n_done, "mean_ep_len": s[1] / n_done, "episodes": s[2],
+          "nan": s[3], "value_loss": s[4], "surrogate": s[5], "entropy": s[6], "kl": s[7], "lr": s[8],
+        })
       if ckpt.due():
         nvtx.push("ckpt")
         ckpt.write(self.alg.get_policy(), it, env_steps)
