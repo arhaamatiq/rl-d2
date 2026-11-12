@@ -1,0 +1,10 @@
+.venv
+runs
+logs
+profiles
+videos
+.git
+__pycache__
+*.nsys-rep
+*.sqlite
+bar/sim2sim/*.mjb
