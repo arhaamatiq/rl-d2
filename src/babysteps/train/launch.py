@@ -33,6 +33,39 @@ def _git_rev() -> str:
     return os.environ.get("BS_COMMIT", "unknown")
 
 
+def _parse_value(v: str):
+  import ast
+
+  try:
+    return ast.literal_eval(v)
+  except Exception:
+    return v
+
+
+def apply_overrides(recipe, sets: list[str]) -> dict:
+  """Dotted-path overrides on env / agent configs or recipe options."""
+  done = {}
+  roots = {"env": recipe.env_cfg, "agent": recipe.agent_cfg}
+  for item in sets:
+    path, val = item.split("=", 1)
+    val = _parse_value(val)
+    head, *rest = path.split(".")
+    if head == "opt":
+      recipe.options[".".join(rest)] = val
+    else:
+      obj = roots[head]
+      for part in rest[:-1]:
+        obj = obj[part] if isinstance(obj, dict) else getattr(obj, part)
+      if isinstance(obj, dict):
+        obj[rest[-1]] = val
+      else:
+        if not hasattr(obj, rest[-1]):
+          raise AttributeError(f"{path}: no field {rest[-1]!r}")
+        setattr(obj, rest[-1], val)
+    done[path] = val
+  return done
+
+
 def main(argv: list[str] | None = None) -> None:
   ap = argparse.ArgumentParser()
   ap.add_argument("--recipe", default="stock")
@@ -42,6 +75,8 @@ def main(argv: list[str] | None = None) -> None:
   ap.add_argument("--max-iterations", type=int, default=None)
   ap.add_argument("--profile-iters", type=str, default=None, help="start:stop, cudaProfilerApi range")
   ap.add_argument("--device", default="cuda:0")
+  ap.add_argument("--set", action="append", default=[], metavar="PATH=VALUE",
+                  help="override a config field, e.g. env.scene.num_envs=8192 or agent.algorithm.desired_kl=0.02")
   args = ap.parse_args(argv)
 
   t_launch = launch_timestamp()
@@ -66,6 +101,7 @@ def main(argv: list[str] | None = None) -> None:
   clock.mark("imports_done")
   recipe = get_recipe(args.recipe)
   env_cfg, agent_cfg = recipe.env_cfg, recipe.agent_cfg
+  overrides = apply_overrides(recipe, args.set)
   configure_torch_backends()
   agent_cfg.seed = args.seed
   env_cfg.seed = args.seed
@@ -86,6 +122,7 @@ def main(argv: list[str] | None = None) -> None:
     "python": platform.python_version(),
     "argv": sys.argv,
     "options": recipe.options,
+    "overrides": overrides,
   })
 
   prof = None

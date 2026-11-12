@@ -98,7 +98,9 @@ class GraphedPPOUpdate:
           if torch.is_tensor(t):
             t.zero_()
 
-  def body(self) -> None:
+  def body(self, stages: tuple[str, ...] = ("fwd", "bwd", "opt")) -> None:
+    """Full update by default. ``stages`` exists only for the component benchmark
+    (forward+loss / +backward / +optimizer timed separately)."""
     a = self.alg
     st = a.storage
     actor, critic = a.actor, a.critic
@@ -150,11 +152,13 @@ class GraphedPPOUpdate:
         else:
           value_loss = (ret - value).pow(2).mean()
         loss = surrogate_loss + a.value_loss_coef * value_loss - a.entropy_coef * entropy.mean()
-        self.opt.zero_grad(set_to_none=False)
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(actor.parameters(), a.max_grad_norm)
-        torch.nn.utils.clip_grad_norm_(critic.parameters(), a.max_grad_norm)
-        self.opt.step()
+        if "bwd" in stages:
+          self.opt.zero_grad(set_to_none=False)
+          loss.backward()
+        if "opt" in stages:
+          torch.nn.utils.clip_grad_norm_(actor.parameters(), a.max_grad_norm)
+          torch.nn.utils.clip_grad_norm_(critic.parameters(), a.max_grad_norm)
+          self.opt.step()
         with torch.no_grad():
           self.stats[0] += value_loss.detach()
           self.stats[1] += surrogate_loss.detach()
