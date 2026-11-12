@@ -4,7 +4,7 @@ import traceback
 
 import torch
 
-from babysteps.systems.graph_env import GraphedEnv, capture
+from rl_d2.systems.graph_env import GraphedEnv, capture
 
 
 def main(n=64):

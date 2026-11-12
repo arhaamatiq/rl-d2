@@ -1,7 +1,7 @@
 """Export the frozen CPU sim-to-sim bundle from mjlab, and check observation parity.
 
 Run once on a GPU machine:
-  uv run python -m babysteps.eval.export_bundle --out bar/sim2sim
+  uv run python -m rl_d2.eval.export_bundle --out bar/sim2sim
 
 The action -> ctrl map is measured rather than assumed: each action dimension is
 perturbed through mjlab's own action pipeline and the resulting change in
@@ -105,7 +105,7 @@ def export(out_dir: Path, device: str = "cuda:0") -> dict:
     "timestep": float(m.opt.timestep),
     "obs_layout": [[n, d] for n, d in zip(names, dims, strict=True)],
   }
-  from babysteps.bar import file_sha256
+  from rl_d2.bar import file_sha256
 
   meta = {"mjb_sha256": file_sha256(out_dir / "g1_flat.mjb"), **meta}
   (out_dir / "g1_flat.json").write_text(json.dumps(meta, indent=2) + "\n")
@@ -118,7 +118,7 @@ def parity_check(bundle_dir: Path, device: str = "cuda:0", steps: int = 50, seed
   GPU state and compare with mjlab's actor observation."""
   import mujoco
 
-  from babysteps.eval.sim2sim import Bundle
+  from rl_d2.eval.sim2sim import Bundle
 
   b = Bundle(bundle_dir)
   env = make_nominal_env(device)

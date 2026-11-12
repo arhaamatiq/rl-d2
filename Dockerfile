@@ -29,7 +29,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Bake the frozen sim-to-sim model into the image (regenerates bar/sim2sim/g1_flat.mjb
 # and checks its pinned sha256). CPU only; takes a few minutes.
-RUN .venv/bin/python -m babysteps.eval.export_bundle --verify --device cpu
+RUN .venv/bin/python -m rl_d2.eval.export_bundle --verify --device cpu
 
 ENTRYPOINT ["bash", "scripts/reproduce.sh"]
 CMD ["headline"]

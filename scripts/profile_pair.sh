@@ -7,7 +7,7 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$here"
 ta="$1"; shift || true
 mkdir -p profiles results/profiles runs/prof
-export BS_COLD=0 BS_NVTX=1 MUJOCO_GL=egl
+export RLD2_COLD=0 RLD2_NVTX=1 MUJOCO_GL=egl
 
 prof() {  # name recipe iters extra...
   local name="$1" recipe="$2" iters="$3"; shift 3
@@ -22,6 +22,6 @@ prof() {  # name recipe iters extra...
 
 prof stock stock 100:110
 prof track_a "$ta" 50:60 "$@"
-BS_NVTX=0 .venv/bin/python scripts/bench_components.py --recipe "$ta" "$@" --json results/profiles/components_track_a.json > /dev/null
-BS_NVTX=0 .venv/bin/python scripts/bench_components.py --recipe graph_stock --json results/profiles/components_graph_stock.json > /dev/null
+RLD2_NVTX=0 .venv/bin/python scripts/bench_components.py --recipe "$ta" "$@" --json results/profiles/components_track_a.json > /dev/null
+RLD2_NVTX=0 .venv/bin/python scripts/bench_components.py --recipe graph_stock --json results/profiles/components_graph_stock.json > /dev/null
 echo done

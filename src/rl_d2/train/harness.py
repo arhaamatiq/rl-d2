@@ -18,7 +18,7 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from babysteps import policy as policy_io
+from rl_d2 import policy as policy_io
 
 
 def process_start_time() -> float:
@@ -36,7 +36,7 @@ def process_start_time() -> float:
 
 
 def launch_timestamp() -> float:
-  ts = os.environ.get("BS_LAUNCH_TS")
+  ts = os.environ.get("RLD2_LAUNCH_TS")
   return float(ts) if ts else process_start_time()
 
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from babysteps.train.recipes import Recipe, _stock_cfgs, register
+from rl_d2.train.recipes import Recipe, _stock_cfgs, register
 
 
 @register

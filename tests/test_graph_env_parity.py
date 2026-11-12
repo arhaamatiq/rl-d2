@@ -50,7 +50,7 @@ def test_graphed_step_matches_stock(steps: int = 400, n: int = 32, horizon: int 
   """
   from mjlab.envs import ManagerBasedRlEnv
 
-  from babysteps.systems.graph_env import GraphedEnv, capture
+  from rl_d2.systems.graph_env import GraphedEnv, capture
 
   ref = ManagerBasedRlEnv(cfg=_det_cfg(n), device="cuda:0")
   ge = GraphedEnv(_det_cfg(n), n)

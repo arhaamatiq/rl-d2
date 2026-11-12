@@ -2,8 +2,8 @@ import re
 
 import numpy as np
 
-from babysteps.bar import load_bar
-from babysteps.eval import gpu_eval
+from rl_d2.bar import load_bar
+from rl_d2.eval import gpu_eval
 
 
 def test_bar_commands():

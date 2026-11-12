@@ -1,8 +1,8 @@
-# Babysteps
+# rl-d2
 
 **How fast can one GPU teach a humanoid to walk robustly?**
 
-Babysteps turns "time-to-walk" into a benchmark with a frozen finish line, then sets
+rl-d2 turns "time-to-walk" into a benchmark with a frozen finish line, then sets
 records against it. The robot is the 29-DoF G1 humanoid in
 [mjlab](https://github.com/mujocolab/mjlab) (MuJoCo Warp); the baseline is mjlab's stock
 velocity-tracking PPO recipe ([rsl_rl](https://github.com/leggedrobotics/rsl_rl)), run
@@ -12,7 +12,7 @@ cold start with compilation caches wiped, over 5 seeds, and comes from [`LEDGER.
 | | time-to-bar, median [IQR] | per seed (min) | iterations to bar | s / iteration | GPU util (NVML) |
 |---|---|---|---|---|---|
 | stock mjlab PPO (T0) | **13.26 min** [12.77, 15.78] | 18.05, 13.26, 12.77, 15.78, 12.77 | 1,432 | 0.528 | 73.1% |
-| Babysteps Track A (PPO) | **4.69 min** [4.69, 4.80] | 4.69, 5.20, 4.69, 4.68, 4.80 | 601 | 0.399 | 99.99% |
+| rl-d2 Track A (PPO) | **4.69 min** [4.69, 4.80] | 4.69, 5.20, 4.69, 4.68, 4.80 | 601 | 0.399 | 99.99% |
 | speedup | **2.83x** (3.14x excluding startup/compile) | | 2.38x | 1.32x | |
 
 All 10 runs pass every check. At the first passing checkpoint (medians), stock vs Track A:
@@ -144,9 +144,9 @@ doubled batch into far fewer than half the iterations. Track A records stay sing
 ## Reproduce
 
 ```bash
-docker build -t babysteps .
-docker run --gpus all babysteps headline    # Track A: 5 seeds, cold start, judge, median/IQR
-docker run --gpus all babysteps baseline    # stock T0: 5 seeds
+docker build -t rl-d2 .
+docker run --gpus all rl-d2 headline    # Track A: 5 seeds, cold start, judge, median/IQR
+docker run --gpus all rl-d2 baseline    # stock T0: 5 seeds
 ```
 
 Without Docker (Ubuntu 24.04, NVIDIA driver with CUDA >= 12.8):
@@ -160,7 +160,7 @@ Pieces:
 
 ```bash
 scripts/train.sh <recipe> <seed> runs/<name> <budget_min>    # cold-start timed run
-.venv/bin/python -m babysteps.eval.time_to_bar --run runs/<name> --procs 4
+.venv/bin/python -m rl_d2.eval.time_to_bar --run runs/<name> --procs 4
 .venv/bin/python scripts/profile_report.py <trace.sqlite>     # NVTX phase breakdown
 .venv/bin/python scripts/make_video.py --left runs/a --right runs/b --minute 5 --out v.mp4
 ```
@@ -174,13 +174,12 @@ host (mostly MuJoCo Warp kernel compilation); a slower host CPU adds tens of sec
 | path | what |
 |---|---|
 | `bar/` | frozen bar spec, sim-to-sim model metadata and pinned hash |
-| `src/babysteps/eval/` | judge: GPU tracking/falls/push, CPU sim-to-sim, ordered time-to-bar scan |
-| `src/babysteps/train/` | timing harness, stock runner, graphed runner, recipes |
-| `src/babysteps/systems/` | graph-capturable env step, graphed PPO update, symmetry, NVTX |
+| `src/rl_d2/eval/` | judge: GPU tracking/falls/push, CPU sim-to-sim, ordered time-to-bar scan |
+| `src/rl_d2/train/` | timing harness, stock runner, graphed runner, recipes |
+| `src/rl_d2/systems/` | graph-capturable env step, graphed PPO update, symmetry, NVTX |
 | `scripts/` | official runs, reproduction, live early stop, profiling, calibration, video |
 | `tests/` | parity tests vs stock mjlab and rsl_rl, mirror-map physics test, CPU unit tests |
-| `docs/upstream/` | prepared (not submitted) patches for mjlab and rsl_rl |
-| `LEDGER.md`, `DECISIONS.md`, `SPEND.md` | every number, every decision, every dollar |
+| `LEDGER.md`, `DECISIONS.md` | every number, every decision |
 
 ## Related work
 
@@ -195,7 +194,7 @@ host (mostly MuJoCo Warp kernel compilation); a slower host CPU adds tens of sec
 * Mittal et al., "Symmetry Considerations for Learning Task Symmetric Robot Policies"
   (ICRA 2024).
 
-Babysteps does not claim to be the first fast humanoid locomotion result. What it adds is
+rl-d2 does not claim to be the first fast humanoid locomotion result. What it adds is
 a fixed, robustness-checked finish line with an offline judge, and an accounting of where
 single-GPU PPO time goes.
 
@@ -203,7 +202,7 @@ single-GPU PPO time goes.
 
 | track | entry | time-to-bar (median [IQR], 5 seeds) | host | verified |
 |---|---|---|---|---|
-| A (PPO) | Babysteps Track A | 4.69 min [4.69, 4.80] | RTX 4090 + Ryzen 9 7950X | reproduced 5.15 min on a fresh pod (+9.8%) |
+| A (PPO) | rl-d2 Track A | 4.69 min [4.69, 4.80] | RTX 4090 + Ryzen 9 7950X | reproduced 5.15 min on a fresh pod (+9.8%) |
 | A (PPO) | stock mjlab G1 PPO | 13.26 min [12.77, 15.78] | RTX 4090 + Ryzen 9 7950X | baseline |
 | B (open) | open | | | |
 

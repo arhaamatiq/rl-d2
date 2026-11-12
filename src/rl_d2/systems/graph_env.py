@@ -218,21 +218,21 @@ def patch_torcharray_setitem() -> None:
   path torch and Warp share one stream, so writes stay on the current stream."""
   from mjlab.sim.sim_data import TorchArray
 
-  if getattr(TorchArray, "_bs_patched", False):
+  if getattr(TorchArray, "_rld2_patched", False):
     return
 
   def __setitem__(self, idx, value):
     self._tensor[idx] = value
 
   TorchArray.__setitem__ = __setitem__
-  TorchArray._bs_patched = True
+  TorchArray._rld2_patched = True
 
 
 def patch_scalar_setitem() -> None:
   """``t[cuda_index] = 0.0`` stages the Python scalar through a pageable host
   tensor (torch 2.9), which cannot be captured. mjlab's reset code uses this
   pattern throughout; route such scalars through a device 0-d tensor instead."""
-  if getattr(torch.Tensor, "_bs_scalar_patched", False):
+  if getattr(torch.Tensor, "_rld2_scalar_patched", False):
     return
   orig = torch.Tensor.__setitem__
 
@@ -247,7 +247,7 @@ def patch_scalar_setitem() -> None:
     return orig(self, idx, value)
 
   torch.Tensor.__setitem__ = __setitem__
-  torch.Tensor._bs_scalar_patched = True
+  torch.Tensor._rld2_scalar_patched = True
 
 
 def patch_event_sampling() -> None:
@@ -255,7 +255,7 @@ def patch_event_sampling() -> None:
   call (a pageable host->device copy, illegal during capture). Cache it per range."""
   import mjlab.envs.mdp.events as ev
 
-  if getattr(ev, "_bs_patched", False):
+  if getattr(ev, "_rld2_patched", False):
     return
   cache: dict = {}
   sample_uniform = ev.sample_uniform
@@ -270,7 +270,7 @@ def patch_event_sampling() -> None:
     return sample_uniform(t[:, 0], t[:, 1], shape, device=device)
 
   ev._sample_se3_range = _sample_se3_range
-  ev._bs_patched = True
+  ev._rld2_patched = True
 
 
 def patch_logging_resets(env) -> None:

@@ -3,7 +3,7 @@ requires = ["uv_build>=0.8.0,<0.13.0"]
 build-backend = "uv_build"
 
 [project]
-name = "babysteps"
+name = "rl-d2"
 version = "0.1.0"
 description = "A reproducible single-GPU speedrun for humanoid locomotion RL with a frozen robustness bar."
 readme = "README.md"
@@ -32,9 +32,9 @@ cu128 = ["torch==2.9.0"]
 cpu = ["torch==2.9.0"]
 
 [project.scripts]
-bs-train = "babysteps.train.launch:main"
-bs-eval = "babysteps.eval.time_to_bar:main"
-bs-ledger = "babysteps.ledger:main"
+rld2-train = "rl_d2.train.launch:main"
+rld2-eval = "rl_d2.eval.time_to_bar:main"
+rld2-ledger = "rl_d2.ledger:main"
 
 [dependency-groups]
 dev = ["pytest>=8.0", "ruff>=0.6"]

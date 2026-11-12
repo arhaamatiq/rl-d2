@@ -7,17 +7,17 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 out="$1"; shift
 mkdir -p "$out"
-export BS_CACHE_ROOT="${BS_CACHE_ROOT:-/root/.bs_cache/gpu${CUDA_VISIBLE_DEVICES:-0}}"
+export RLD2_CACHE_ROOT="${RLD2_CACHE_ROOT:-/root/.rld2_cache/gpu${CUDA_VISIBLE_DEVICES:-0}}"
 for item in "$@"; do
   IFS=: read -r recipe seed budget <<< "$item"
   run="$out/${recipe}_s${seed}"
   [[ -f "$run/run.json" ]] && grep -q finished_ts "$run/run.json" && continue
   rm -rf "$run"
-  BS_COLD=1 "$here/scripts/train.sh" "$recipe" "$seed" "$run" "$budget" > "$run.log" 2>&1
+  RLD2_COLD=1 "$here/scripts/train.sh" "$recipe" "$seed" "$run" "$budget" > "$run.log" 2>&1
 done
 for item in "$@"; do
   IFS=: read -r recipe seed budget <<< "$item"
   run="$out/${recipe}_s${seed}"
-  [[ -f "$run/time_to_bar.json" ]] || MUJOCO_GL=egl "$here/.venv/bin/python" -m babysteps.eval.time_to_bar \
-    --run "$run" --procs "${BS_EVAL_PROCS:-6}" > "$run.eval.log" 2>&1
+  [[ -f "$run/time_to_bar.json" ]] || MUJOCO_GL=egl "$here/.venv/bin/python" -m rl_d2.eval.time_to_bar \
+    --run "$run" --procs "${RLD2_EVAL_PROCS:-6}" > "$run.eval.log" 2>&1
 done

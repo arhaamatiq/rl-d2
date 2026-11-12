@@ -5,7 +5,7 @@ line, with four additions that every track shares:
   1. the first-iteration timestamp (for the "excluding startup" number),
   2. wall-clock checkpoints of the deterministic actor for the evaluator,
   3. a wall-clock budget after which the run stops,
-  4. NVTX ranges (inactive unless BS_NVTX=1).
+  4. NVTX ranges (inactive unless RLD2_NVTX=1).
 The PPO math, rollout order, logging and mjlab's own periodic saves are untouched.
 """
 
@@ -18,8 +18,8 @@ import torch
 from mjlab.tasks.velocity.rl import VelocityOnPolicyRunner
 from rsl_rl.utils import check_nan
 
-from babysteps.systems import nvtx
-from babysteps.train.harness import CheckpointWriter, IterLog, RunClock
+from rl_d2.systems import nvtx
+from rl_d2.train.harness import CheckpointWriter, IterLog, RunClock
 
 
 def instrument_ppo(alg) -> None:

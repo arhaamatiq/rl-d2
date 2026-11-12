@@ -1,6 +1,6 @@
 # Attribution
 
-babysteps is built on the open-source projects below. All of them are used as
+rl-d2 is built on the open-source projects below. All of them are used as
 dependencies installed from PyPI (see `pyproject.toml` and `uv.lock`); no source is
 vendored except where noted in the rsl_rl section.
 
@@ -20,7 +20,7 @@ The G1 humanoid model comes from the asset zoo shipped inside mjlab
 from MuJoCo Menagerie (https://github.com/google-deepmind/mujoco_menagerie). Menagerie
 model files are distributed under BSD-3-Clause
 (https://github.com/google-deepmind/mujoco_menagerie/blob/main/LICENSE; each model
-directory there also carries its own license file). babysteps does not copy or modify
+directory there also carries its own license file). rl-d2 does not copy or modify
 the model files; it loads them from the installed mjlab package.
 
 ## Code derived from rsl_rl
@@ -28,8 +28,8 @@ the model files; it loads them from the installed mjlab package.
 Two files reproduce the logic of rsl_rl 5.4.2 and are derived from it under
 BSD-3-Clause (license linked above):
 
-- `src/babysteps/train/stock_runner.py` follows `OnPolicyRunner.learn`.
-- `src/babysteps/systems/graphed_ppo.py` follows `PPO.update`.
+- `src/rl_d2/train/stock_runner.py` follows `OnPolicyRunner.learn`.
+- `src/rl_d2/systems/graphed_ppo.py` follows `PPO.update`.
 
 The first mirrors the stock training loop so the baseline measures the unmodified
 algorithm; the second is a CUDA-graph version of the PPO update that is checked for

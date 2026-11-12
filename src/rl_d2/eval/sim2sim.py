@@ -22,8 +22,8 @@ from pathlib import Path
 
 import numpy as np
 
-from babysteps.bar import BAR_DIR, Bar, file_sha256
-from babysteps.policy import PortablePolicy
+from rl_d2.bar import BAR_DIR, Bar, file_sha256
+from rl_d2.policy import PortablePolicy
 
 BUNDLE_DIR = BAR_DIR / "sim2sim"
 
@@ -73,7 +73,7 @@ class Bundle:
     self.model_path = self.dir / "g1_flat.mjb"
     if not self.model_path.exists():
       raise FileNotFoundError(
-        f"{self.model_path} missing; run `python -m babysteps.eval.export_bundle --verify`"
+        f"{self.model_path} missing; run `python -m rl_d2.eval.export_bundle --verify`"
       )
     self.model_sha = file_sha256(self.model_path)
     if self.model_sha != self.meta["mjb_sha256"]:

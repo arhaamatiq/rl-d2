@@ -1,6 +1,6 @@
 """NVTX helpers.
 
-Ranges are pushed only when ``BS_NVTX=1`` so that timing runs pay nothing. When
+Ranges are pushed only when ``RLD2_NVTX=1`` so that timing runs pay nothing. When
 enabled, the profile splits each iteration into:
 
   rollout.policy      actor/critic forward during data collection
@@ -23,7 +23,7 @@ import contextlib
 import functools
 import os
 
-ENABLED = os.environ.get("BS_NVTX", "0") == "1"
+ENABLED = os.environ.get("RLD2_NVTX", "0") == "1"
 
 if ENABLED:
   import nvtx as _nvtx

@@ -1,7 +1,7 @@
 """Offline evaluation of a run: find the first checkpoint that passes the bar.
 
-  bs-eval --run runs/<name>                 # stop at the first pass (official)
-  bs-eval --run runs/<name> --all           # every checkpoint (calibration curves)
+  rld2-eval --run runs/<name>                 # stop at the first pass (official)
+  rld2-eval --run runs/<name> --all           # every checkpoint (calibration curves)
 
 Stages per checkpoint, in order, each gating the next:
   1. GPU: tracking error (lin, yaw) and fall-free rate over the held-out commands
@@ -17,8 +17,8 @@ import json
 import time
 from pathlib import Path
 
-from babysteps import policy as policy_io
-from babysteps.bar import load_bar
+from rl_d2 import policy as policy_io
+from rl_d2.bar import load_bar
 
 
 def gpu_pass(m: dict, thr: dict) -> dict:
@@ -47,8 +47,8 @@ def _eval_one(args) -> dict:
   """Evaluate one checkpoint (runs in a worker process that keeps its EvalEnv)."""
   global _EV
   run_dir, bar_path, c, calibrating, sim2sim_all, device, s2s_workers = args
-  from babysteps.eval.gpu_eval import EvalEnv, run_gpu_eval
-  from babysteps.eval.sim2sim import run_sim2sim
+  from rl_d2.eval.gpu_eval import EvalEnv, run_gpu_eval
+  from rl_d2.eval.sim2sim import run_sim2sim
 
   bar = load_bar(bar_path)
   thr = bar.thresholds

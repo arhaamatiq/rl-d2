@@ -5,8 +5,8 @@ import torch
 from rsl_rl.models import MLPModel
 from tensordict import TensorDict
 
-from babysteps import policy as policy_io
-from babysteps.train.harness import CheckpointWriter, RunClock
+from rl_d2 import policy as policy_io
+from rl_d2.train.harness import CheckpointWriter, RunClock
 
 
 def _actor() -> MLPModel:

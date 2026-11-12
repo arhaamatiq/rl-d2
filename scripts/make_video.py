@@ -19,8 +19,8 @@ from pathlib import Path
 
 import numpy as np
 
-from babysteps import policy as policy_io
-from babysteps.eval.sim2sim import Bundle, quat_rotate_inverse, yaw_from_quat
+from rl_d2 import policy as policy_io
+from rl_d2.eval.sim2sim import Bundle, quat_rotate_inverse, yaw_from_quat
 
 SCHEDULE = [(0.0, (0.0, 0.0, 0.0)), (1.5, (0.6, 0.0, 0.0)), (5.0, (1.0, 0.0, 0.0)),
             (8.0, (0.5, 0.0, 0.4)), (11.0, (0.0, 0.4, 0.0)), (13.0, (0.8, 0.0, 0.0))]
@@ -93,7 +93,7 @@ def main():
   ap.add_argument("--left", type=Path, required=True)
   ap.add_argument("--right", type=Path, required=True)
   ap.add_argument("--left-name", default="stock PPO")
-  ap.add_argument("--right-name", default="Babysteps (Track A)")
+  ap.add_argument("--right-name", default="rl-d2 (Track A)")
   ap.add_argument("--minute", type=float, default=5.0)
   ap.add_argument("--seconds", type=float, default=16.0)
   ap.add_argument("--out", type=Path, required=True)

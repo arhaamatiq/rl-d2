@@ -10,7 +10,7 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-from babysteps.ledger import quantiles
+from rl_d2.ledger import quantiles
 
 
 def main():

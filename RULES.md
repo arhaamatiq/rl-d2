@@ -1,6 +1,6 @@
 # Rules
 
-Babysteps measures **time-to-bar**: wall-clock time from launch to the first saved
+rl-d2 measures **time-to-bar**: wall-clock time from launch to the first saved
 checkpoint that passes a frozen evaluation, on a single RTX 4090.
 
 ## The bar (frozen: `bar/bar_v1.json`, sha256 `3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058`)

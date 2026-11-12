@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prepare a fresh Ubuntu 24.04 GPU machine (CUDA driver >= 12.8) for Babysteps.
+# Prepare a fresh Ubuntu 24.04 GPU machine (CUDA driver >= 12.8) for rl-d2.
 #   scripts/pod_setup.sh [--nsys]
 # Idempotent. Installs system libs, the locked Python env, and regenerates the
 # frozen sim-to-sim model (verifying its pinned sha256).
@@ -27,5 +27,5 @@ fi
 
 command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync --locked --extra cu128
-MUJOCO_GL=egl .venv/bin/python -m babysteps.eval.export_bundle --verify --device cpu
+MUJOCO_GL=egl .venv/bin/python -m rl_d2.eval.export_bundle --verify --device cpu
 echo "setup ok"

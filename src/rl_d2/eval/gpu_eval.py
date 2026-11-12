@@ -17,8 +17,8 @@ from dataclasses import dataclass, field
 import numpy as np
 import torch
 
-from babysteps.bar import Bar
-from babysteps.policy import PortablePolicy
+from rl_d2.bar import Bar
+from rl_d2.policy import PortablePolicy
 
 # ----------------------------------------------------------------------------------
 # Fixed command term (eval only)

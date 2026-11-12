@@ -43,7 +43,7 @@ def _make_alg(device):
 
 
 def test_update_matches_rsl_rl():
-  from babysteps.systems.graphed_ppo import GraphedPPOUpdate, make_inplace_normalizer
+  from rl_d2.systems.graphed_ppo import GraphedPPOUpdate, make_inplace_normalizer
 
   device = "cuda:0"
   torch.manual_seed(0)

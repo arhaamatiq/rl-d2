@@ -1,7 +1,7 @@
 """Stop a training run early once a separate machine has seen it pass the bar.
 
 Runs from a workstation with ssh access to both machines:
-  python scripts/live_stop.py --train-host A --eval-host B --remote-root /root/babysteps \
+  python scripts/live_stop.py --train-host A --eval-host B --remote-root /root/rl-d2 \
       --runs runs/official/stock_s0 runs/official/stock_s1 ...
 
 Every minute: copy new checkpoints of the active run from the training machine to
@@ -32,7 +32,7 @@ def main():
   ap = argparse.ArgumentParser()
   ap.add_argument("--train-host", required=True)
   ap.add_argument("--eval-host", required=True)
-  ap.add_argument("--remote-root", default="/root/babysteps")
+  ap.add_argument("--remote-root", default="/root/rl-d2")
   ap.add_argument("--runs", nargs="+", required=True)
   ap.add_argument("--buffer", type=int, default=4, help="extra checkpoints to wait for after a pass")
   ap.add_argument("--procs", type=int, default=4)
@@ -59,7 +59,7 @@ def main():
       subprocess.run(["rsync", "-az", str(local) + "/", f"{a.eval_host}:{root}/{live}/"], check=True)
       n_ckpt = len((local / "checkpoints.jsonl").read_text().splitlines())
       if pass_k is None and next_k < n_ckpt:
-        out = sh(a.eval_host, f"cd {root} && MUJOCO_GL=egl .venv/bin/python -m babysteps.eval.time_to_bar "
+        out = sh(a.eval_host, f"cd {root} && MUJOCO_GL=egl .venv/bin/python -m rl_d2.eval.time_to_bar "
                               f"--run {live} --start-k {next_k} --procs {a.procs} 2>/dev/null | tail -n 40", check=False)
         try:
           summ = json.loads(out[out.index("{"):])

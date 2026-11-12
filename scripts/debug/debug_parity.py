@@ -6,7 +6,7 @@ sys.path.insert(0, "tests")
 from mjlab.envs import ManagerBasedRlEnv  # noqa: E402
 from test_graph_env_parity import _det_cfg  # noqa: E402
 
-from babysteps.systems.graph_env import GraphedEnv, capture  # noqa: E402
+from rl_d2.systems.graph_env import GraphedEnv, capture  # noqa: E402
 
 n = 16
 ref = ManagerBasedRlEnv(cfg=_det_cfg(n), device="cuda:0")

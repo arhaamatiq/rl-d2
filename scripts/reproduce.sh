@@ -15,7 +15,7 @@ out=runs/repro
 mkdir -p "$out"
 
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader || true
-[[ -f bar/sim2sim/g1_flat.mjb ]] || MUJOCO_GL=egl .venv/bin/python -m babysteps.eval.export_bundle --verify --device cpu
+[[ -f bar/sim2sim/g1_flat.mjb ]] || MUJOCO_GL=egl .venv/bin/python -m rl_d2.eval.export_bundle --verify --device cpu
 
 case "${1:-headline}" in
   headline) scripts/run_official.sh "$HEADLINE_RECIPE" "$HEADLINE_BUDGET" "$out" "${SEEDS[@]}" ;;

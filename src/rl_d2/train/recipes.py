@@ -52,7 +52,7 @@ def stock() -> Recipe:
 def get_recipe(name: str) -> Recipe:
   if name not in RECIPES:
     # Track A recipes live in their own module to keep this one stable.
-    from babysteps.train import fast_recipes  # noqa: F401
+    from rl_d2.train import fast_recipes  # noqa: F401
   if name not in RECIPES:
     raise KeyError(f"unknown recipe {name!r}; known: {sorted(RECIPES)}")
   return RECIPES[name]()

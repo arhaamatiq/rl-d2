@@ -3,8 +3,8 @@ import torch
 from rsl_rl.models import MLPModel
 from tensordict import TensorDict
 
-from babysteps import policy as policy_io
-from babysteps.policy import PortablePolicy
+from rl_d2 import policy as policy_io
+from rl_d2.policy import PortablePolicy
 
 
 def _random_policy(seed: int = 0) -> PortablePolicy:

@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-FORMAT = "bs-policy-v1"
+FORMAT = "rld2-policy-v1"
 
 _ACTIVATIONS_NP = {
   "elu": lambda x: np.where(x > 0.0, x, np.expm1(np.minimum(x, 0.0))),

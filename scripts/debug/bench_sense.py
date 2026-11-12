@@ -1,7 +1,7 @@
 import torch
 import mjlab.tasks  # noqa: F401
 from mjlab.tasks.registry import load_env_cfg
-from babysteps.systems.graph_env import GraphedEnv, capture
+from rl_d2.systems.graph_env import GraphedEnv, capture
 
 ge = GraphedEnv(load_env_cfg("Mjlab-Velocity-Flat-Unitree-G1"), 4096)
 ge.reset_all()

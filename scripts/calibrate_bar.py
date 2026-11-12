@@ -20,8 +20,8 @@ import math
 from datetime import datetime, timezone
 from pathlib import Path
 
-from babysteps import policy as policy_io
-from babysteps.bar import Bar, load_bar
+from rl_d2 import policy as policy_io
+from rl_d2.bar import Bar, load_bar
 
 PUSH_CANDIDATES = [0.5, 0.75, 1.0, 1.25]
 
@@ -37,8 +37,8 @@ def main():
   ap.add_argument("--device", default="cuda:0")
   a = ap.parse_args()
 
-  from babysteps.eval.gpu_eval import EvalEnv, run_gpu_eval
-  from babysteps.eval.sim2sim import run_sim2sim
+  from rl_d2.eval.gpu_eval import EvalEnv, run_gpu_eval
+  from rl_d2.eval.sim2sim import run_sim2sim
 
   base = load_bar()
   refs = []

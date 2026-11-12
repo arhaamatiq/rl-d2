@@ -2,9 +2,9 @@
 
 ``results/ledger.jsonl`` is append-only; ``LEDGER.md`` is rendered from it.
 
-  bs-ledger add --id T0 --metric time_to_bar --value 1234.5 --unit s ...
-  bs-ledger runs --id T0 --metric time_to_bar --runs runs/official/stock_s{0..4} ...
-  bs-ledger render
+  rld2-ledger add --id T0 --metric time_to_bar --value 1234.5 --unit s ...
+  rld2-ledger runs --id T0 --metric time_to_bar --runs runs/official/stock_s{0..4} ...
+  rld2-ledger render
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-from babysteps.bar import REPO_ROOT
+from rl_d2.bar import REPO_ROOT
 
 LEDGER = REPO_ROOT / "results" / "ledger.jsonl"
 LEDGER_MD = REPO_ROOT / "LEDGER.md"
@@ -65,7 +65,7 @@ def render() -> str:
     "# Ledger",
     "",
     "Every number in the README and write-up comes from this table. Rendered from",
-    "`results/ledger.jsonl` by `bs-ledger render`; edit the jsonl, never this file.",
+    "`results/ledger.jsonl` by `rld2-ledger render`; edit the jsonl, never this file.",
     "",
     "| " + " | ".join(COLUMNS) + " |",
     "|" + "---|" * len(COLUMNS),

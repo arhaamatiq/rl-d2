@@ -2,7 +2,7 @@
 
   scripts/train.sh <recipe> <seed> <run_dir> [budget_min]
 
-The wrapper exports BS_LAUNCH_TS before the interpreter starts, so imports,
+The wrapper exports RLD2_LAUNCH_TS before the interpreter starts, so imports,
 kernel compilation, env construction and graph capture are all inside the clock.
 """
 
@@ -19,8 +19,8 @@ import time
 from dataclasses import asdict
 from pathlib import Path
 
-from babysteps.bar import load_bar
-from babysteps.train.harness import (
+from rl_d2.bar import load_bar
+from rl_d2.train.harness import (
   CheckpointWriter,
   IterLog,
   RunClock,
@@ -36,7 +36,7 @@ def _git_rev() -> str:
     dirty = subprocess.call(["git", "-C", str(root), "diff", "--quiet"]) != 0
     return rev + ("-dirty" if dirty else "")
   except Exception:
-    return os.environ.get("BS_COMMIT", "unknown")
+    return os.environ.get("RLD2_COMMIT", "unknown")
 
 
 def _parse_value(v: str):
@@ -105,7 +105,7 @@ def main(argv: list[str] | None = None) -> None:
   run_dir.mkdir(parents=True, exist_ok=True)
   bar = load_bar()
 
-  from babysteps.systems.gpu_monitor import GpuMonitor
+  from rl_d2.systems.gpu_monitor import GpuMonitor
 
   mon = GpuMonitor().start()
 
@@ -114,8 +114,8 @@ def main(argv: list[str] | None = None) -> None:
   from mjlab.rl import RslRlVecEnvWrapper
   from mjlab.utils.torch import configure_torch_backends
 
-  from babysteps.systems import nvtx
-  from babysteps.train.recipes import get_recipe
+  from rl_d2.systems import nvtx
+  from rl_d2.train.recipes import get_recipe
 
   clock.mark("imports_done")
   recipe = get_recipe(args.recipe)
@@ -135,7 +135,7 @@ def main(argv: list[str] | None = None) -> None:
     "seed": args.seed,
     "budget_min": args.budget_min,
     "launch_ts": t_launch,
-    "commit": os.environ.get("BS_COMMIT") or _git_rev(),
+    "commit": os.environ.get("RLD2_COMMIT") or _git_rev(),
     "bar_sha256": bar.sha256,
     "host": socket.gethostname(),
     "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu",
@@ -152,7 +152,7 @@ def main(argv: list[str] | None = None) -> None:
     prof = (int(a), int(b))
 
   if recipe.runner == "stock":
-    from babysteps.train.stock_runner import TimedVelocityRunner
+    from rl_d2.train.stock_runner import TimedVelocityRunner
 
     env = ManagerBasedRlEnv(cfg=env_cfg, device=args.device)
     nvtx.instrument_env(env)
@@ -168,7 +168,7 @@ def main(argv: list[str] | None = None) -> None:
     runner.learn(num_learning_iterations=agent_cfg.max_iterations, init_at_random_ep_len=True)
     iterlog.close()
   else:
-    from babysteps.train.fast_runner import run_fast
+    from rl_d2.train.fast_runner import run_fast
 
     trainer = run_fast(recipe, run_dir, clock, bar, args, prof)
     env = trainer.genv.env

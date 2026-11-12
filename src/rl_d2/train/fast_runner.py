@@ -15,14 +15,14 @@ from dataclasses import asdict
 import torch
 from tensordict import TensorDict
 
-from babysteps.systems import nvtx
-from babysteps.systems.graph_env import GraphedEnv, capture
-from babysteps.systems.graphed_ppo import (
+from rl_d2.systems import nvtx
+from rl_d2.systems.graph_env import GraphedEnv, capture
+from rl_d2.systems.graphed_ppo import (
   GraphedPPOUpdate,
   make_capturable_gaussian,
   make_inplace_normalizer,
 )
-from babysteps.train.harness import CheckpointWriter, IterLog
+from rl_d2.train.harness import CheckpointWriter, IterLog
 
 
 class _Shim:
@@ -51,7 +51,7 @@ class FastTrainer:
       # NVRTC emits SASS directly instead of PTX that the driver then JIT-compiles.
       wp.config.cuda_output = "cubin"
     if opts.get("parallel_compile"):
-      from babysteps.systems.warp_preload import set_parallel_loading
+      from rl_d2.systems.warp_preload import set_parallel_loading
 
       self.preload.append({"load_module_max_workers": set_parallel_loading()})
     self.genv = GraphedEnv(env_cfg, self.N, device=device, turn_frac=float(opts.get("turn_frac", 0.0)))
@@ -86,7 +86,7 @@ class FastTrainer:
     self.alg.train_mode()
     sym = None
     if opts.get("symmetry"):
-      from babysteps.systems import symmetry
+      from rl_d2.systems import symmetry
 
       sym = symmetry.build(env, device)
     self.upd = GraphedPPOUpdate(

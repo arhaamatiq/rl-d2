@@ -41,12 +41,12 @@ def main():
 
   from mjlab.utils.torch import configure_torch_backends
 
-  from babysteps.bar import load_bar
-  from babysteps.systems.graph_env import capture
-  from babysteps.train.fast_runner import FastTrainer
-  from babysteps.train.harness import RunClock
-  from babysteps.train.launch import apply_overrides
-  from babysteps.train.recipes import get_recipe
+  from rl_d2.bar import load_bar
+  from rl_d2.systems.graph_env import capture
+  from rl_d2.train.fast_runner import FastTrainer
+  from rl_d2.train.harness import RunClock
+  from rl_d2.train.launch import apply_overrides
+  from rl_d2.train.recipes import get_recipe
 
   configure_torch_backends()
   recipe = get_recipe(a.recipe)

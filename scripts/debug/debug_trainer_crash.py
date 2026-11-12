@@ -3,12 +3,12 @@ import time
 
 import torch
 
-from babysteps.bar import load_bar
-from babysteps.systems.graph_env import capture
-from babysteps.train.fast_runner import FastTrainer
-from babysteps.train.harness import RunClock
-from babysteps.train.launch import apply_overrides
-from babysteps.train.recipes import get_recipe
+from rl_d2.bar import load_bar
+from rl_d2.systems.graph_env import capture
+from rl_d2.train.fast_runner import FastTrainer
+from rl_d2.train.harness import RunClock
+from rl_d2.train.launch import apply_overrides
+from rl_d2.train.recipes import get_recipe
 
 n, mode = int(sys.argv[1]), sys.argv[2]
 r = get_recipe("graph_stock")

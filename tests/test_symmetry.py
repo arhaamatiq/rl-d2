@@ -9,8 +9,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from babysteps.eval.sim2sim import BUNDLE_DIR
-from babysteps.systems.symmetry import _VEC_SIGNS, joint_mirror
+from rl_d2.eval.sim2sim import BUNDLE_DIR
+from rl_d2.systems.symmetry import _VEC_SIGNS, joint_mirror
 
 pytestmark = pytest.mark.skipif(not (BUNDLE_DIR / "g1_flat.mjb").exists(), reason="model bundle not built")
 
@@ -33,7 +33,7 @@ def _mirror_maps(bundle):
 def test_mirror_matches_physics():
   import mujoco
 
-  from babysteps.eval.sim2sim import Bundle
+  from rl_d2.eval.sim2sim import Bundle
 
   b = Bundle(Path(BUNDLE_DIR))
   m = b.m

@@ -17,10 +17,10 @@ for s in "${seeds[@]}"; do
     echo "skip $run (done)"; continue
   fi
   rm -rf "$run"
-  BS_COLD=1 "$here/scripts/train.sh" "$recipe" "$s" "$run" "$budget" "${extra[@]}" > "$run.log" 2>&1
+  RLD2_COLD=1 "$here/scripts/train.sh" "$recipe" "$s" "$run" "$budget" "${extra[@]}" > "$run.log" 2>&1
 done
 for s in "${seeds[@]}"; do
   run="$out/${recipe}_s${s}"
-  [[ -f "$run/time_to_bar.json" ]] || MUJOCO_GL=egl "$here/.venv/bin/python" -m babysteps.eval.time_to_bar --run "$run" --procs "${BS_EVAL_PROCS:-4}" > "$run.eval.log" 2>&1
+  [[ -f "$run/time_to_bar.json" ]] || MUJOCO_GL=egl "$here/.venv/bin/python" -m rl_d2.eval.time_to_bar --run "$run" --procs "${RLD2_EVAL_PROCS:-4}" > "$run.eval.log" 2>&1
   "$here/.venv/bin/python" -c "import json,sys; d=json.load(open('$run/time_to_bar.json')); print('$run', 'PASS' if d['passed'] else 'FAIL', round(d.get('time_to_bar_s', float('nan'))/60, 2), 'min')"
 done
