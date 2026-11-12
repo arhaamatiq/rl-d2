@@ -113,7 +113,19 @@ tighter tracking kernels (they trade turning for linear precision), turn-in-plac
 curriculum, looser yaw posture, KL 0.03 (unstable), smaller initial action noise,
 sparser training pushes, eager parallel Warp compilation (breaks mjlab's own capture).
 
-{{VERIFY_SECTION}}
+## Independent verification
+
+An independent re-run provisioned a new pod of
+the same host class, set it up from the committed tree and ran `reproduce.sh headline`:
+**5/5 seeds pass, median 5.15 min [4.66, 5.65], +9.8% vs the official 4.69 min**, inside
+the 10% reproduction rule, but only just. The same seeds do not give the same run: MuJoCo
+Warp is not bitwise deterministic, and time-to-bar moves in 30 s checkpoint steps, so one
+seed shifting a checkpoint moves a 5-seed median by ~0.5 min. On the reproduction the
+speedup is 2.57x. In 3 of the 5 fresh seeds the passing checkpoint sat exactly at the
+sim-to-sim threshold (14/16). Re-judging the official checkpoints agreed on 7 of the 8
+runs that were read back; the exception was a borderline checkpoint (track_a seed 1,
+checkpoint 8) that failed officially and passed on re-judging. Details:
+[`results/verify/REPORT.md`](results/verify/REPORT.md).
 
 ## Multi-GPU
 
@@ -191,7 +203,7 @@ single-GPU PPO time goes.
 
 | track | entry | time-to-bar (median [IQR], 5 seeds) | host | verified |
 |---|---|---|---|---|
-| A (PPO) | Babysteps Track A | 4.69 min [4.69, 4.80] | RTX 4090 + Ryzen 9 7950X | {{VERIFIED}} |
+| A (PPO) | Babysteps Track A | 4.69 min [4.69, 4.80] | RTX 4090 + Ryzen 9 7950X | reproduced 5.15 min on a fresh pod (+9.8%) |
 | A (PPO) | stock mjlab G1 PPO | 13.26 min [12.77, 15.78] | RTX 4090 + Ryzen 9 7950X | baseline |
 | B (open) | open | | | |
 

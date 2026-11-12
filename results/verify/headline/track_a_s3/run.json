@@ -1,0 +1,50 @@
+{
+  "recipe": "track_a",
+  "seed": 3,
+  "budget_min": 8.0,
+  "launch_ts": 1794469941.6462357,
+  "commit": "unknown",
+  "bar_sha256": "3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058",
+  "host": "d7ee9172ae64",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "torch": "2.9.0+cu128",
+  "python": "3.13.8",
+  "argv": [
+    "/root/babysteps/src/babysteps/train/launch.py",
+    "--recipe",
+    "track_a",
+    "--seed",
+    "3",
+    "--out",
+    "runs/repro/track_a_s3",
+    "--budget-min",
+    "8"
+  ],
+  "options": {
+    "fused_adam": true,
+    "symmetry": true,
+    "amp": "bf16"
+  },
+  "overrides": {},
+  "clock": {
+    "python_main": 0.7016420364379883,
+    "imports_done": 3.1428725719451904,
+    "env_built": 34.05140209197998,
+    "update_graph_captured": 36.10506820678711,
+    "rollout_graph_captured": 37.23189067840576,
+    "runner_built": 37.232396602630615,
+    "first_iter_start": 37.232722997665405,
+    "done": 480.49086570739746
+  },
+  "gpu_monitor_all": {
+    "gpu_util_mean": 92.66186299081036,
+    "gpu_power_w_mean": 254.16849979114454,
+    "n": 4788
+  },
+  "gpu_monitor_train": {
+    "gpu_util_mean": 99.98546863647373,
+    "gpu_power_w_mean": 270.83404141438604,
+    "n": 4129
+  },
+  "finished_ts": 1794470422.1586738
+}

@@ -1,0 +1,7 @@
+NVIDIA GeForce RTX 4090, 595.91.07
+runs/repro/track_a_s0 PASS 4.64 min
+runs/repro/track_a_s1 PASS 5.65 min
+runs/repro/track_a_s2 PASS 4.66 min
+runs/repro/track_a_s3 PASS 5.15 min
+runs/repro/track_a_s4 PASS 5.66 min
+track_a: 5/5 passed, median 5.15 min [IQR 4.66-5.65]

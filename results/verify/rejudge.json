@@ -1,0 +1,82 @@
+{
+ "stock_s0": {
+  "official_first_pass_k": 34,
+  "official_time_s": 1083.2738361358643,
+  "official_iter": 1705,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "stock_s1": {
+  "official_first_pass_k": 25,
+  "official_time_s": 795.8553392887115,
+  "official_iter": 1432,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "stock_s2": {
+  "official_first_pass_k": 24,
+  "official_time_s": 766.4887793064117,
+  "official_iter": 1323,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "stock_s3": {
+  "official_first_pass_k": 30,
+  "official_time_s": 946.8996388912201,
+  "official_iter": 1662,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "stock_s4": {
+  "official_first_pass_k": 24,
+  "official_time_s": 766.0709400177002,
+  "official_iter": 1332,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "track_a_s0": {
+  "official_first_pass_k": 8,
+  "official_time_s": 281.6401963233948,
+  "official_iter": 601,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "track_a_s1": {
+  "official_first_pass_k": 9,
+  "official_time_s": 311.9682283401489,
+  "official_iter": 674,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "track_a_s2": {
+  "official_first_pass_k": 8,
+  "official_time_s": 281.61425971984863,
+  "official_iter": 599,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "track_a_s3": {
+  "official_first_pass_k": 8,
+  "official_time_s": 280.81233644485474,
+  "official_iter": 600,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ },
+ "track_a_s4": {
+  "official_first_pass_k": 8,
+  "official_time_s": 287.72736740112305,
+  "official_iter": 601,
+  "rejudged_first_pass_k": null,
+  "rejudged_time_s": null,
+  "status": "not re-judged (pod terminated externally before evaluation finished; no output retrieved)"
+ }
+}
