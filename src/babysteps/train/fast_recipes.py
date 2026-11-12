@@ -57,7 +57,8 @@ def track_a_dev() -> Recipe:
 # ---- named recipes: one per ablation row (cumulative), and the record ----------------
 
 
-def _graphed(name: str, *, kl=0.01, symmetry=False, epochs=5, amp=None, yaw_w=None, fine_ang=None) -> Recipe:
+def _graphed(name: str, *, kl=0.01, symmetry=False, epochs=5, amp=None, yaw_w=None, fine_ang=None,
+             lin_w=None) -> Recipe:
   env_cfg, agent_cfg = _stock_cfgs()
   agent_cfg.algorithm.desired_kl = kl
   agent_cfg.algorithm.num_learning_epochs = epochs
@@ -66,6 +67,8 @@ def _graphed(name: str, *, kl=0.01, symmetry=False, epochs=5, amp=None, yaw_w=No
     opts["fine_ang_std"] = fine_ang
   if yaw_w:
     env_cfg.rewards["track_angular_velocity"].weight = yaw_w
+  if lin_w:
+    env_cfg.rewards["track_linear_velocity"].weight = lin_w
   return Recipe(name, env_cfg, agent_cfg, runner="fast", options=opts, finalize=_finalize)
 
 
@@ -103,3 +106,18 @@ def track_a_yaw4() -> Recipe:
 def track_a() -> Recipe:
   """The Track A record recipe (chosen by 3-seed validation on dev seeds 201-203)."""
   return _graphed("track_a", kl=0.02, symmetry=True, epochs=8, amp="bf16", yaw_w=4.0)
+
+
+@register
+def cand_lin3_yaw4() -> Recipe:
+  return _graphed("cand_lin3_yaw4", kl=0.02, symmetry=True, epochs=8, amp="bf16", yaw_w=4.0, lin_w=3.0)
+
+
+@register
+def cand_lin2_yaw3() -> Recipe:
+  return _graphed("cand_lin2_yaw3", kl=0.02, symmetry=True, epochs=8, amp="bf16", yaw_w=3.0)
+
+
+@register
+def cand_lin3_yaw3() -> Recipe:
+  return _graphed("cand_lin3_yaw3", kl=0.02, symmetry=True, epochs=8, amp="bf16", yaw_w=3.0, lin_w=3.0)
