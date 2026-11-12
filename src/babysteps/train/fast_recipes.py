@@ -10,3 +10,32 @@ def graph_stock() -> Recipe:
   """Systems only: stock env count and PPO hyperparameters, rollout + update as CUDA graphs."""
   env_cfg, agent_cfg = _stock_cfgs()
   return Recipe("graph_stock", env_cfg, agent_cfg, runner="fast", options={"fused_adam": True})
+
+
+def _finalize(recipe: Recipe) -> None:
+  """Option-driven training-side edits (never touches the evaluation)."""
+  import math
+
+  from mjlab.managers.reward_manager import RewardTermCfg
+  from mjlab.tasks.velocity import mdp
+
+  o = recipe.options
+  env = recipe.env_cfg
+  std = o.get("fine_track_std")
+  if std:
+    # Extra, tighter tracking kernels on top of the stock ones: the stock yaw kernel
+    # (std 0.71 rad/s) is nearly flat at the error levels the bar asks for.
+    w = float(o.get("fine_track_w", 1.0))
+    env.rewards["track_lin_fine"] = RewardTermCfg(
+      func=mdp.track_linear_velocity, weight=w, params={"command_name": "twist", "std": float(std)})
+    env.rewards["track_ang_fine"] = RewardTermCfg(
+      func=mdp.track_angular_velocity, weight=w, params={"command_name": "twist", "std": float(std)})
+  assert math.isfinite(float(o.get("fine_track_w", 1.0)))
+
+
+@register
+def track_a_dev() -> Recipe:
+  """Development recipe: graphed systems + options set with --set opt.<name>=..."""
+  env_cfg, agent_cfg = _stock_cfgs()
+  return Recipe("track_a_dev", env_cfg, agent_cfg, runner="fast", options={"fused_adam": True},
+                finalize=_finalize)

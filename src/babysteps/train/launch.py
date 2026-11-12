@@ -121,6 +121,8 @@ def main(argv: list[str] | None = None) -> None:
   recipe = get_recipe(args.recipe)
   env_cfg, agent_cfg = recipe.env_cfg, recipe.agent_cfg
   overrides = apply_overrides(recipe, args.set)
+  if recipe.finalize is not None:
+    recipe.finalize(recipe)
   configure_torch_backends()
   agent_cfg.seed = args.seed
   env_cfg.seed = args.seed

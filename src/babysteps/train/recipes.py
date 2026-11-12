@@ -21,6 +21,7 @@ class Recipe:
   agent_cfg: object
   runner: str  # "stock" | "fast"
   options: dict = field(default_factory=dict)
+  finalize: Callable[["Recipe"], None] | None = None  # applies option-driven cfg edits
 
 
 RECIPES: dict[str, Callable[[], Recipe]] = {}
