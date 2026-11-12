@@ -21,6 +21,6 @@ for s in "${seeds[@]}"; do
 done
 for s in "${seeds[@]}"; do
   run="$out/${recipe}_s${s}"
-  [[ -f "$run/time_to_bar.json" ]] || MUJOCO_GL=egl "$here/.venv/bin/python" -m babysteps.eval.time_to_bar --run "$run" > "$run.eval.log" 2>&1
+  [[ -f "$run/time_to_bar.json" ]] || MUJOCO_GL=egl "$here/.venv/bin/python" -m babysteps.eval.time_to_bar --run "$run" --procs "${BS_EVAL_PROCS:-4}" > "$run.eval.log" 2>&1
   "$here/.venv/bin/python" -c "import json,sys; d=json.load(open('$run/time_to_bar.json')); print('$run', 'PASS' if d['passed'] else 'FAIL', round(d.get('time_to_bar_s', float('nan'))/60, 2), 'min')"
 done
