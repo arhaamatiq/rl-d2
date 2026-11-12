@@ -45,6 +45,11 @@ class FastTrainer:
     env_cfg, agent_cfg = recipe.env_cfg, recipe.agent_cfg
     self.N = env_cfg.scene.num_envs
     self.preload = []
+    if opts.get("warp_cubin"):
+      import warp as wp
+
+      # NVRTC emits SASS directly instead of PTX that the driver then JIT-compiles.
+      wp.config.cuda_output = "cubin"
     if opts.get("parallel_compile"):
       from babysteps.systems.warp_preload import set_parallel_loading
 
@@ -144,7 +149,9 @@ class FastTrainer:
     self._rollout_body()  # eager pass so the update warm-up sees real data
     self.update_graph, _ = capture(self.upd.body, warmup=1, warp=False)
     self.clock.mark("update_graph_captured")
-    self.rollout_graph, _ = capture(self._rollout_body, warmup=1)
+    # The eager pass above already loaded every kernel the rollout uses, so no
+    # second warm-up rollout is needed before capturing it.
+    self.rollout_graph, _ = capture(self._rollout_body, warmup=int(self.opts.get("rollout_warmup", 0)))
     self.clock.mark("rollout_graph_captured")
     # undo the warm-up's optimizer steps and normalizer updates
     self.upd.restore(snap)

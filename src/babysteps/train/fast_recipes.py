@@ -97,3 +97,9 @@ def track_a_fine() -> Recipe:
 @register
 def track_a_yaw4() -> Recipe:
   return _graphed("track_a_yaw4", kl=0.02, symmetry=True, epochs=8, amp="bf16", yaw_w=4.0)
+
+
+@register
+def track_a() -> Recipe:
+  """The Track A record recipe (chosen by 3-seed validation on dev seeds 201-203)."""
+  return _graphed("track_a", kl=0.02, symmetry=True, epochs=8, amp="bf16", yaw_w=4.0)

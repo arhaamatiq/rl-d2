@@ -101,3 +101,15 @@ An explicit parallel `wp.force_load` before env construction breaks mjlab's own 
 graph capture during `Simulation.__init__` ("operation would make the legacy stream
 depend on a capturing blocking stream" from a module re-initialized mid-capture), so it
 is not used. Shipping precompiled kernels would defeat the cold-cache rule.
+
+## D11. Track A recipe (locked 2026-11-12 06:20 UTC, before any official Track A run)
+Graphed systems path + PPO changes, each chosen on dev seeds with the frozen judge:
+KL target 0.02 (0.03 was unstable), left-right symmetry augmentation of the actor loss,
+8 epochs, bf16 autocast in the update, yaw-rate tracking reward weight 2 -> 4.
+Validation (warm cache, training time to first pass): seeds 201 / 202 at iterations
+560 / 645 (3.68 / 4.24 min). The alternative with an extra yaw-only fine kernel passed at
+797 / 797 (5.35 min) and was not chosen. Rejected along the way: 8k envs, 12 steps/env,
+fine tracking on both axes, tighter stock yaw kernel, turn-in-place curriculum, looser
+yaw posture, no heading envs, KL 0.03, init std 0.5, sparser training pushes.
+Measured cold start of the graphed runner on an idle reference host: ~43 s (an earlier
+84-92 s reading was taken on a pod that was also running the live evaluator).
