@@ -31,6 +31,12 @@ def _finalize(recipe: Recipe) -> None:
     env.rewards["track_ang_fine"] = RewardTermCfg(
       func=mdp.track_angular_velocity, weight=w, params={"command_name": "twist", "std": float(std)})
   assert math.isfinite(float(o.get("fine_track_w", 1.0)))
+  ang_std = o.get("fine_ang_std")
+  if ang_std:
+    # Yaw-only fine kernel (the both-axes version traded yaw for linear precision).
+    env.rewards["track_ang_fine"] = RewardTermCfg(
+      func=mdp.track_angular_velocity, weight=float(o.get("fine_ang_w", 1.0)),
+      params={"command_name": "twist", "std": float(ang_std)})
   if o.get("loose_yaw_posture"):
     # Stock posture reward holds hip/waist yaw to std 0.15/0.2 rad while moving, which
     # fights turning in place; loosen only those joints in the walking regime.
