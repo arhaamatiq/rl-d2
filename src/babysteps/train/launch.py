@@ -88,10 +88,6 @@ def main(argv: list[str] | None = None) -> None:
     "options": recipe.options,
   })
 
-  env = ManagerBasedRlEnv(cfg=env_cfg, device=args.device)
-  nvtx.instrument_env(env)
-  clock.mark("env_built")
-
   prof = None
   if args.profile_iters:
     a, b = args.profile_iters.split(":")
@@ -99,6 +95,10 @@ def main(argv: list[str] | None = None) -> None:
 
   if recipe.runner == "stock":
     from babysteps.train.stock_runner import TimedVelocityRunner
+
+    env = ManagerBasedRlEnv(cfg=env_cfg, device=args.device)
+    nvtx.instrument_env(env)
+    clock.mark("env_built")
 
     venv = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
     tb_dir = run_dir / "tb"
@@ -112,7 +112,8 @@ def main(argv: list[str] | None = None) -> None:
   else:
     from babysteps.train.fast_runner import run_fast
 
-    run_fast(env, recipe, run_dir, clock, bar, args, prof)
+    trainer = run_fast(recipe, run_dir, clock, bar, args, prof)
+    env = trainer.genv.env
 
   clock.mark("done")
   t_first = clock.events.get("first_iter_start")

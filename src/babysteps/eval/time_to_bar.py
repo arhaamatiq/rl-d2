@@ -48,6 +48,7 @@ def evaluate_run(
   device: str = "cuda:0",
   workers: int = 8,
   start_k: int = 0,
+  every: int = 1,
 ) -> dict:
   from babysteps.eval.gpu_eval import EvalEnv, run_gpu_eval
   from babysteps.eval.sim2sim import run_sim2sim
@@ -56,6 +57,8 @@ def evaluate_run(
   thr = bar.thresholds
   calibrating = any(v is None for v in thr.values())
   ckpts = [c for c in read_checkpoints(run_dir) if c["k"] >= start_k]
+  if every > 1:
+    ckpts = [c for c in ckpts if c["k"] % every == 0 or c.get("final")]
   ev = EvalEnv.create(bar, device=device)
   out_path = run_dir / ("eval_all.jsonl" if all_ckpts else "eval.jsonl")
   first = None
@@ -126,8 +129,9 @@ def main(argv: list[str] | None = None) -> None:
   ap.add_argument("--device", default="cuda:0")
   ap.add_argument("--workers", type=int, default=8)
   ap.add_argument("--start-k", type=int, default=0)
+  ap.add_argument("--every", type=int, default=1, help="calibration only: evaluate every n-th checkpoint")
   a = ap.parse_args(argv)
-  s = evaluate_run(a.run, a.bar, a.all, a.sim2sim_all, a.device, a.workers, a.start_k)
+  s = evaluate_run(a.run, a.bar, a.all, a.sim2sim_all, a.device, a.workers, a.start_k, a.every)
   print(json.dumps(s, indent=2))
 
 

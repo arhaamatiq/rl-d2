@@ -39,3 +39,33 @@ mjlab's own action pipeline instead of being re-derived by hand. Observation par
 against mjlab: max abs error 7e-7 over 50 random-action steps. The 71 MB model binary
 is not committed; its sha256 is pinned and the export is deterministic (same hash from
 GPU and CPU export paths).
+
+## D6. Calibration rule (written before the calibration runs finished)
+Seeds 100, 101, 102 calibrate; seeds 0-4 measure. The reference policy for each
+calibration seed is the final checkpoint of a 120-minute stock run.
+* `lin_err_max`, `yaw_err_max` = 1.25 x the worst seed's reference value.
+* `fall_free_min` = 0.98 when all references are fall-free, else worst reference - 0.02.
+* Push strength = largest of {0.5, 0.75, 1.0, 1.25} m/s at which every reference
+  policy recovers from >= 95% of pushes; `push_success_min` = 0.90.
+* `sim2sim_lin_err_max` = 1.5 x `lin_err_max` (no domain randomization in the CPU
+  check, but a different solver); `sim2sim_success_min` = 0.875 (14 of 16 episodes),
+  provided every reference scores >= 15/16.
+The margins make the bar something stock reliably clears partway through training,
+which is what makes T0 measurable.
+
+## D7. Systems: one CUDA graph per rollout, one per PPO update
+Baseline profile: GPU busy 29% of wall time, ~28k kernel launches and ~2,300
+synchronizing calls per iteration, mjlab manager code 54% of host time. Physics alone
+saturates near 580k samples/s; stock delivers ~120k. Rather than rewrite the task, the
+whole env step runs mjlab's own code inside a CUDA graph:
+* N+1 worlds; reset/resample/push indices from `torch.nonzero_static` padded with the
+  extra world's index, so mjlab's `reset(env_ids)` code runs with static shapes.
+* Warp kernels recorded into the PyTorch graph through Warp's external capture.
+* Capture blockers fixed one at a time: Warp stream-switch event dependency,
+  `torch.normal` std validation sync (reparameterized sampling instead), mjlab's
+  `TorchArray.__setitem__` hopping to Warp's stream, pageable host copies from
+  `_sample_se3_range` and from `t[idx] = <python scalar>`, `nonzero` in command
+  resampling/heading, `singular.any()` in the raycast yaw alignment.
+* PPO update rewritten with on-device adaptive LR and a capturable Adam (tensor LR).
+First result at stock settings (4096 envs, same PPO): 0.38 s/iteration vs 0.82 s,
+NVML utilization 100% vs 43%, per-iteration learning curve within the stock seed spread.
