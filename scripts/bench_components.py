@@ -51,6 +51,8 @@ def main():
   configure_torch_backends()
   recipe = get_recipe(a.recipe)
   apply_overrides(recipe, a.set)
+  if recipe.finalize is not None:
+    recipe.finalize(recipe)
   tr = FastTrainer(recipe, None, RunClock(time.time()), load_bar())
   tr.build_graphs()
   alg, ge, N, T = tr.alg, tr.genv, tr.N, tr.T
