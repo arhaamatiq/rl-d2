@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+runs/
+logs/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+profiles/*.nsys-rep
+profiles/*.sqlite
+videos/*.mp4
+!results/**
+.DS_Store
+bar/sim2sim/*.mjb
