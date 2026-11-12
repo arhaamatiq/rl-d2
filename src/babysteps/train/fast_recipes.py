@@ -52,3 +52,48 @@ def track_a_dev() -> Recipe:
   env_cfg, agent_cfg = _stock_cfgs()
   return Recipe("track_a_dev", env_cfg, agent_cfg, runner="fast", options={"fused_adam": True},
                 finalize=_finalize)
+
+
+# ---- named recipes: one per ablation row (cumulative), and the record ----------------
+
+
+def _graphed(name: str, *, kl=0.01, symmetry=False, epochs=5, amp=None, yaw_w=None, fine_ang=None) -> Recipe:
+  env_cfg, agent_cfg = _stock_cfgs()
+  agent_cfg.algorithm.desired_kl = kl
+  agent_cfg.algorithm.num_learning_epochs = epochs
+  opts = {"fused_adam": True, "symmetry": symmetry, "amp": amp}
+  if fine_ang:
+    opts["fine_ang_std"] = fine_ang
+  if yaw_w:
+    env_cfg.rewards["track_angular_velocity"].weight = yaw_w
+  return Recipe(name, env_cfg, agent_cfg, runner="fast", options=opts, finalize=_finalize)
+
+
+@register
+def abl_kl02() -> Recipe:
+  return _graphed("abl_kl02", kl=0.02)
+
+
+@register
+def abl_kl02_sym() -> Recipe:
+  return _graphed("abl_kl02_sym", kl=0.02, symmetry=True)
+
+
+@register
+def abl_kl02_sym_e8() -> Recipe:
+  return _graphed("abl_kl02_sym_e8", kl=0.02, symmetry=True, epochs=8)
+
+
+@register
+def abl_kl02_sym_e8_bf16() -> Recipe:
+  return _graphed("abl_kl02_sym_e8_bf16", kl=0.02, symmetry=True, epochs=8, amp="bf16")
+
+
+@register
+def track_a_fine() -> Recipe:
+  return _graphed("track_a_fine", kl=0.02, symmetry=True, epochs=8, amp="bf16", fine_ang=0.25)
+
+
+@register
+def track_a_yaw4() -> Recipe:
+  return _graphed("track_a_yaw4", kl=0.02, symmetry=True, epochs=8, amp="bf16", yaw_w=4.0)
