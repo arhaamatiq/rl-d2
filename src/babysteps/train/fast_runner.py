@@ -61,6 +61,15 @@ class FastTrainer:
     cfg["multi_gpu"] = None
     self.cfg = cfg
     self.alg = PPO.construct_algorithm(self.obs, _Shim(self.N, self.genv.num_actions, env.cfg), cfg, device)
+    self.rank, self.world = 0, 1
+    import torch.distributed as dist
+
+    if dist.is_available() and dist.is_initialized():
+      self.rank, self.world = dist.get_rank(), dist.get_world_size()
+      # identical initial weights on every rank
+      for m in (self.alg.actor, self.alg.critic):
+        for p in m.parameters():
+          dist.broadcast(p.data, src=0)
     for m in (self.alg.actor, self.alg.critic):
       make_inplace_normalizer(m.obs_normalizer)
     make_capturable_gaussian(self.alg.actor.distribution)

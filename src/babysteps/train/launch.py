@@ -86,6 +86,19 @@ def main(argv: list[str] | None = None) -> None:
   args = ap.parse_args(argv)
 
   t_launch = launch_timestamp()
+  world = int(os.environ.get("WORLD_SIZE", "1"))
+  rank = int(os.environ.get("RANK", "0"))
+  if world > 1:
+    import torch
+    import torch.distributed as dist
+
+    local = int(os.environ.get("LOCAL_RANK", "0"))
+    torch.cuda.set_device(local)
+    args.device = f"cuda:{local}"
+    dist.init_process_group("nccl", device_id=torch.device(args.device))
+    args.seed = args.seed + rank  # different env randomness per rank
+    if rank > 0:
+      args.out = args.out.with_name(args.out.name + f"_rank{rank}")
   clock = RunClock(t_launch=t_launch)
   clock.mark("python_main")
   run_dir: Path = args.out.resolve()

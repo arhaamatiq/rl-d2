@@ -78,6 +78,12 @@ class GraphedPPOUpdate:
     self.stats = torch.zeros(5, device=self.device)  # value, surrogate, entropy, kl, lr_sum
     self.perm_override: torch.Tensor | None = None  # tests only
     self.sym = symmetry  # mirror maps for actor-side symmetry augmentation (optional)
+    # Data parallel: gradients and the KL used by the adaptive LR are averaged across
+    # ranks with NCCL inside the captured graph, so every rank takes the same step.
+    import torch.distributed as dist
+
+    self.world = dist.get_world_size() if dist.is_available() and dist.is_initialized() else 1
+    self.params = params
 
   def snapshot(self) -> dict:
     a = self.alg
@@ -144,6 +150,9 @@ class GraphedPPOUpdate:
           with torch.no_grad():
             kl = actor.get_kl_divergence((old_mu[idx], old_sigma[idx]), (mu.float(), sigma.float()))
             kl_mean = kl.mean()
+            if self.world > 1:
+              torch.distributed.all_reduce(kl_mean)
+              kl_mean = kl_mean / self.world
             down = kl_mean > dkl * 2.0
             up = (kl_mean < dkl / 2.0) & (kl_mean > 0.0)
             new_lr = torch.where(
@@ -171,6 +180,16 @@ class GraphedPPOUpdate:
         if "bwd" in stages:
           self.opt.zero_grad(set_to_none=False)
           loss.backward()
+          if self.world > 1:
+            grads = [p.grad for p in self.params]
+            flat = torch.cat([g.reshape(-1) for g in grads])
+            torch.distributed.all_reduce(flat)
+            flat /= self.world
+            off = 0
+            for g in grads:
+              n = g.numel()
+              g.copy_(flat[off : off + n].view_as(g))
+              off += n
         if "opt" in stages:
           torch.nn.utils.clip_grad_norm_(actor.parameters(), a.max_grad_norm)
           torch.nn.utils.clip_grad_norm_(critic.parameters(), a.max_grad_norm)
