@@ -20,7 +20,13 @@ from dataclasses import asdict
 from pathlib import Path
 
 from babysteps.bar import load_bar
-from babysteps.train.harness import CheckpointWriter, IterLog, RunClock, launch_timestamp, write_run_meta
+from babysteps.train.harness import (
+  CheckpointWriter,
+  IterLog,
+  RunClock,
+  launch_timestamp,
+  write_run_meta,
+)
 
 
 def _git_rev() -> str:

@@ -59,7 +59,7 @@ class PortablePolicy:
     x = (obs.astype(np.float64) - self.obs_mean) / self.obs_denom
     act = _ACTIVATIONS_NP[self.activation]
     n = len(self.weights)
-    for i, (w, b) in enumerate(zip(self.weights, self.biases)):
+    for i, (w, b) in enumerate(zip(self.weights, self.biases, strict=True)):
       x = x @ w.T + b
       if i < n - 1:
         x = act(x)
@@ -112,7 +112,7 @@ class TorchPolicy(torch.nn.Module):
   def forward(self, obs: torch.Tensor) -> torch.Tensor:
     x = (obs - self.mean) / self.denom
     n = len(self.ws)
-    for i, (w, b) in enumerate(zip(self.ws, self.bs)):
+    for i, (w, b) in enumerate(zip(self.ws, self.bs, strict=True)):
       x = torch.addmm(b, x, w.T)
       if i < n - 1:
         x = self.act(x)

@@ -73,6 +73,7 @@ def test_update_matches_rsl_rl():
   for (na, pa), (nb, pb) in zip(
     list(alg_a.actor.named_parameters()) + list(alg_a.critic.named_parameters()),
     list(alg_b.actor.named_parameters()) + list(alg_b.critic.named_parameters()),
+    strict=True,
   ):
     assert na == nb
     worst = max(worst, float((pa - pb).abs().max()))

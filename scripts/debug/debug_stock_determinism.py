@@ -1,8 +1,10 @@
 import sys
+
 import torch
+
 sys.path.insert(0, "tests")
-from test_graph_env_parity import _det_cfg  # noqa: E402
 from mjlab.envs import ManagerBasedRlEnv  # noqa: E402
+from test_graph_env_parity import _det_cfg  # noqa: E402
 
 n = 16
 for n2 in (16, 17):

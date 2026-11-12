@@ -127,7 +127,7 @@ class FastTrainer:
     # undo the warm-up's optimizer steps and normalizer updates
     self.upd.restore(snap)
     with torch.no_grad():
-      for m, s in zip((self.alg.actor, self.alg.critic), norm_snap):
+      for m, s in zip((self.alg.actor, self.alg.critic), norm_snap, strict=True):
         for k, v in m.obs_normalizer.state_dict().items():
           v.copy_(s[k])
     self.cur_ret.zero_()

@@ -259,6 +259,7 @@ torch = [
 
 [tool.ruff]
 src = ["src"]
+extend-exclude = ["scripts/debug"]
 indent-width = 2
 line-length = 100
 

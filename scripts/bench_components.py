@@ -39,13 +39,14 @@ def main():
   ap.add_argument("--json", default=None)
   a = ap.parse_args()
 
+  from mjlab.utils.torch import configure_torch_backends
+
   from babysteps.bar import load_bar
   from babysteps.systems.graph_env import capture
   from babysteps.train.fast_runner import FastTrainer
   from babysteps.train.harness import RunClock
   from babysteps.train.launch import apply_overrides
   from babysteps.train.recipes import get_recipe
-  from mjlab.utils.torch import configure_torch_backends
 
   configure_torch_backends()
   recipe = get_recipe(a.recipe)

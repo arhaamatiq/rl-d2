@@ -103,7 +103,7 @@ def export(out_dir: Path, device: str = "cuda:0") -> dict:
     "default_root_quat": root_state[3:7].tolist(),
     "decimation": int(env.cfg.decimation),
     "timestep": float(m.opt.timestep),
-    "obs_layout": [[n, d] for n, d in zip(names, dims)],
+    "obs_layout": [[n, d] for n, d in zip(names, dims, strict=True)],
   }
   from babysteps.bar import file_sha256
 

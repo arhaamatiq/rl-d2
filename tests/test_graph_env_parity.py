@@ -6,7 +6,6 @@ produce the same observations, rewards and dones for the same actions, including
 across falls, resets and pushes.
 """
 
-import math
 
 import pytest
 import torch
