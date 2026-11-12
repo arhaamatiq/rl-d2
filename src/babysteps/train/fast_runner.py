@@ -65,10 +65,16 @@ class FastTrainer:
       make_inplace_normalizer(m.obs_normalizer)
     make_capturable_gaussian(self.alg.actor.distribution)
     self.alg.train_mode()
+    sym = None
+    if opts.get("symmetry"):
+      from babysteps.systems import symmetry
+
+      sym = symmetry.build(env, device)
     self.upd = GraphedPPOUpdate(
       self.alg,
       fused_adam=opts.get("fused_adam", True),
       amp_dtype={"bf16": torch.bfloat16, None: None}[opts.get("amp")],
+      symmetry=sym,
     )
     # init_at_random_ep_len, as the stock runner does
     env.episode_length_buf[: self.N] = torch.randint_like(

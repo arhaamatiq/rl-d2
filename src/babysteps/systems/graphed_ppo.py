@@ -57,7 +57,8 @@ def make_capturable_gaussian(dist) -> None:
 
 
 class GraphedPPOUpdate:
-  def __init__(self, alg, *, fused_adam: bool = False, amp_dtype: torch.dtype | None = None):
+  def __init__(self, alg, *, fused_adam: bool = False, amp_dtype: torch.dtype | None = None,
+               symmetry: dict | None = None):
     self.alg = alg
     st = alg.storage
     self.device = alg.device
@@ -76,6 +77,7 @@ class GraphedPPOUpdate:
     self.adv = torch.zeros(self.T, self.N, 1, device=self.device)
     self.stats = torch.zeros(5, device=self.device)  # value, surrogate, entropy, kl, lr_sum
     self.perm_override: torch.Tensor | None = None  # tests only
+    self.sym = symmetry  # mirror maps for actor-side symmetry augmentation (optional)
 
   def snapshot(self) -> dict:
     a = self.alg
@@ -120,12 +122,23 @@ class GraphedPPOUpdate:
       for i in range(self.M):
         idx = perm[i * self.mb : (i + 1) * self.mb]
         ob = {k: obs[k][idx] for k in obs.keys()}
+        act_b = actions[idx]
+        if self.sym is not None:
+          # Symmetry augmentation: the actor is also evaluated on mirrored
+          # (obs, action) pairs, which reuse the original sample's advantage and
+          # old log-prob (rsl_rl's convention). KL / entropy use originals only.
+          y = self.sym
+          oa = ob["actor"]
+          ob_actor = {"actor": torch.cat([oa, oa[:, y["obs_perm"]] * y["obs_sign"]])}
+          act_b = torch.cat([act_b, act_b[:, y["act_perm"]] * y["act_sign"]])
+        else:
+          ob_actor = ob
         with torch.autocast("cuda", dtype=self.amp_dtype, enabled=self.amp_dtype is not None):
-          actor(ob, stochastic_output=True)
+          actor(ob_actor, stochastic_output=True)
           value = critic(ob)
-        logp = actor.get_output_log_prob(actions[idx])
-        mu, sigma = actor.output_distribution_params
-        entropy = actor.output_entropy
+        logp = actor.get_output_log_prob(act_b)
+        mu, sigma = (p[: self.mb] for p in actor.output_distribution_params)
+        entropy = actor.output_entropy[: self.mb]
         value = value.float()
         if a.desired_kl is not None and a.schedule == "adaptive":
           with torch.no_grad():
@@ -140,8 +153,11 @@ class GraphedPPOUpdate:
             )
             self.lr.copy_(new_lr)
             self.stats[3] += kl_mean
-        ratio = torch.exp(logp - torch.squeeze(old_logp[idx]))
+        old_lp = torch.squeeze(old_logp[idx])
         adv_b = torch.squeeze(adv[idx])
+        if self.sym is not None:
+          old_lp, adv_b = old_lp.repeat(2), adv_b.repeat(2)
+        ratio = torch.exp(logp - old_lp)
         surr = -adv_b * ratio
         surr_c = -adv_b * torch.clamp(ratio, 1.0 - a.clip_param, 1.0 + a.clip_param)
         surrogate_loss = torch.max(surr, surr_c).mean()
