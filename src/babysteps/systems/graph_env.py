@@ -118,7 +118,7 @@ def patch_raycast(env) -> int:
   return n
 
 
-def patch_velocity_command(term, n_real: int) -> None:
+def patch_velocity_command(term, n_real: int, turn_frac: float = 0.0) -> None:
   """Static-shape, sync-free versions of UniformVelocityCommand's per-step logic.
 
   Same sampling distribution and update rules as mjlab 1.6.0; only the index
@@ -150,6 +150,19 @@ def patch_velocity_command(term, n_real: int) -> None:
     v1 = torch.where(fwd, torch.zeros_like(v[:, 1]), v[:, 1])
     v2 = torch.where(fwd, torch.zeros_like(v[:, 2]), v[:, 2])
     term.vel_command_b[env_ids] = torch.stack([v0, v1, v2], dim=1)
+    if turn_frac > 0.0:
+      # Training curriculum option: a share of commands become pure turn-in-place,
+      # |wz| ~ U(0.25, max), no linear velocity, no heading control.
+      turn = torch.rand(len(env_ids), device=term.device) < turn_frac
+      lo, hi = 0.25, float(cfg.ranges.ang_vel_z[1])
+      mag = torch.rand(len(env_ids), device=term.device) * (hi - lo) + lo
+      sgn = torch.where(torch.rand(len(env_ids), device=term.device) < 0.5, -1.0, 1.0)
+      v = term.vel_command_b[env_ids]
+      tw = torch.stack([torch.zeros_like(mag), torch.zeros_like(mag), sgn * mag], dim=1)
+      term.vel_command_b[env_ids] = torch.where(turn.unsqueeze(1), tw, v)
+      term.vel_command_w[env_ids] = term.vel_command_b[env_ids]
+      for flag in (term.is_heading_env, term.is_standing_env, term.is_world_env):
+        flag[env_ids] = flag[env_ids] & ~turn
 
   def _update_command(env_ids=None):
     if env_ids is not None:  # eager reset path (initial env.reset), not captured
@@ -288,7 +301,7 @@ def patch_logging_resets(env) -> None:
 
 
 class GraphedEnv:
-  def __init__(self, env_cfg, num_envs: int, device: str = "cuda:0"):
+  def __init__(self, env_cfg, num_envs: int, device: str = "cuda:0", turn_frac: float = 0.0):
     from mjlab.envs import ManagerBasedRlEnv
 
     env_cfg.scene.num_envs = num_envs + 1
@@ -299,7 +312,7 @@ class GraphedEnv:
     self.patched_ids = patch_entity_cfg_ids(env)
     self.patched_raycast = patch_raycast(env)
     for term in env.command_manager._terms.values():
-      patch_velocity_command(term, num_envs)
+      patch_velocity_command(term, num_envs, turn_frac=turn_frac)
     patch_logging_resets(env)
     patch_torcharray_setitem()
     patch_event_sampling()

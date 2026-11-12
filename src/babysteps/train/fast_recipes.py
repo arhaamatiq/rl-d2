@@ -31,6 +31,13 @@ def _finalize(recipe: Recipe) -> None:
     env.rewards["track_ang_fine"] = RewardTermCfg(
       func=mdp.track_angular_velocity, weight=w, params={"command_name": "twist", "std": float(std)})
   assert math.isfinite(float(o.get("fine_track_w", 1.0)))
+  if o.get("loose_yaw_posture"):
+    # Stock posture reward holds hip/waist yaw to std 0.15/0.2 rad while moving, which
+    # fights turning in place; loosen only those joints in the walking regime.
+    sw = dict(env.rewards["pose"].params["std_walking"])
+    sw[r".*hip_yaw.*"] = float(o.get("loose_yaw_posture"))
+    sw[r".*waist_yaw.*"] = float(o.get("loose_yaw_posture"))
+    env.rewards["pose"].params["std_walking"] = sw
 
 
 @register

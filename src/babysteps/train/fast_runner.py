@@ -49,7 +49,7 @@ class FastTrainer:
       from babysteps.systems.warp_preload import set_parallel_loading
 
       self.preload.append({"load_module_max_workers": set_parallel_loading()})
-    self.genv = GraphedEnv(env_cfg, self.N, device=device)
+    self.genv = GraphedEnv(env_cfg, self.N, device=device, turn_frac=float(opts.get("turn_frac", 0.0)))
     clock.mark("env_built")
     env = self.genv.env
     self.T = agent_cfg.num_steps_per_env
