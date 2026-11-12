@@ -69,3 +69,12 @@ whole env step runs mjlab's own code inside a CUDA graph:
 * PPO update rewritten with on-device adaptive LR and a capturable Adam (tensor LR).
 First result at stock settings (4096 envs, same PPO): 0.38 s/iteration vs 0.82 s,
 NVML utilization 100% vs 43%, per-iteration learning curve within the stock seed spread.
+
+## D8. Graph capture order (driver crash workaround)
+At >= 8k envs, capturing the PPO-update graph after the rollout graph made the
+rollout graph's next launch segfault inside `cuGraphLaunch` (native backtrace via
+gdb; driver 595.91, CUDA 13.2). Each graph alone was fine, memory was ample
+(19.9 GiB free), and neither keeping the Warp graph object alive nor `gc.freeze()`
+changed it. Capturing the update graph first and the rollout graph last is stable at
+8k and 16k envs over 60 alternating iterations including a rollout re-capture, so the
+trainer always uses that order. Root cause not isolated; recorded as an open question.

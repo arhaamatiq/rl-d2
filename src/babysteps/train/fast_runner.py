@@ -114,10 +114,16 @@ class FastTrainer:
     norm_snap = [
       {k: v.clone() for k, v in m.obs_normalizer.state_dict().items()} for m in (self.alg.actor, self.alg.critic)
     ]
+    # Capture order matters. Capturing any graph *after* the rollout graph (which
+    # contains MuJoCo Warp's conditional solver nodes) made the rollout graph's
+    # next launch segfault inside cuGraphLaunch at >= 8k envs (driver 595.91,
+    # CUDA 13.2). Update first, rollout last, has been stable at 8k and 16k envs
+    # including later rollout re-captures.
+    self._rollout_body()  # eager pass so the update warm-up sees real data
+    self.update_graph, _ = capture(self.upd.body, warmup=1, warp=False)
+    self.clock.mark("update_graph_captured")
     self.rollout_graph, _ = capture(self._rollout_body, warmup=1)
     self.clock.mark("rollout_graph_captured")
-    self.update_graph, _ = capture(self.upd.body, warmup=1)
-    self.clock.mark("update_graph_captured")
     # undo the warm-up's optimizer steps and normalizer updates
     self.upd.restore(snap)
     with torch.no_grad():

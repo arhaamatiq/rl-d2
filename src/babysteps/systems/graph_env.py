@@ -404,8 +404,27 @@ class GraphedEnv:
 # ----------------------------------------------------------------------------------
 
 
-def capture(fn, warmup: int = 2, pool=None):
-  """Capture ``fn()`` (torch + Warp work) into a CUDA graph. Returns (graph, outputs)."""
+class CapturedGraph:
+  """A PyTorch CUDA graph plus the Warp graph object for the same capture.
+
+  Warp's Graph owns resources the recorded nodes use (e.g. state for the
+  conditional nodes of MuJoCo Warp's solver loop). If it is garbage-collected
+  the PyTorch graph keeps pointers to freed resources and replay crashes. Keep
+  both alive together."""
+
+  def __init__(self, torch_graph, warp_graph):
+    self.torch_graph = torch_graph
+    self.warp_graph = warp_graph
+
+  def replay(self) -> None:
+    self.torch_graph.replay()
+
+
+def capture(fn, warmup: int = 2, pool=None, warp: bool = True):
+  """Capture ``fn()`` (torch + Warp work) into a CUDA graph. Returns (graph, outputs).
+  ``warp=False`` for torch-only bodies (no Warp external-capture hooks)."""
+  import gc
+
   s = torch.cuda.Stream()
   s.wait_stream(torch.cuda.current_stream())
   wps = wp.stream_from_torch(s)
@@ -415,15 +434,27 @@ def capture(fn, warmup: int = 2, pool=None):
   torch.cuda.current_stream().wait_stream(s)
   torch.cuda.synchronize()
   g = torch.cuda.CUDAGraph()
-  with torch.cuda.graph(g, stream=s, pool=pool):
-    wp.capture_begin(stream=wps, external=True)
-    try:
-      with wp.ScopedStream(wps, sync_enter=False):
+  # A finalizer of a stale Warp object running mid-capture would be recorded
+  # into this graph; keep the collector off while capturing.
+  gc_was_enabled = gc.isenabled()
+  gc.disable()
+  try:
+    wgraph = None
+    with torch.cuda.graph(g, stream=s, pool=pool):
+      if warp:
+        wp.capture_begin(stream=wps, external=True)
+        try:
+          with wp.ScopedStream(wps, sync_enter=False):
+            out = fn()
+        finally:
+          wgraph = wp.capture_end(stream=wps)
+      else:
         out = fn()
-    finally:
-      wp.capture_end(stream=wps)
+  finally:
+    if gc_was_enabled:
+      gc.enable()
   torch.cuda.synchronize()
-  return g, out
+  return CapturedGraph(g, wgraph), out
 
 
 def deg(x: float) -> float:
