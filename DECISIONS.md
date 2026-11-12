@@ -121,3 +121,21 @@ compilation-cache roots). An evaluation process was accidentally started on the 
 the in-progress `abl_kl02_sym_e8_bf16` seed-0 run (a watcher script matched its own
 launch command). The run was discarded and re-run from scratch; no other run overlapped
 any other workload (checked with a process audit of every pod).
+
+## D13. Results and what they mean
+* Official (5 seeds, cold, reference host): stock 13.26 min [12.77, 15.78], Track A 4.69 min
+  [4.69, 4.80] -> 2.83x; 3.14x excluding startup/compile. The 3x target was missed.
+* Decomposition: 1,432 -> 601 iterations (2.38x) x 0.528 -> 0.399 s/iteration (1.32x).
+  Systems alone (ablation row 1) is 1.36x on this host; on a host with a slower CPU the
+  stock loop is far more host-bound (0.82 s/iteration on an EPYC 7352 pod), so the
+  reference host makes the systems gain look smallest.
+* Why not 3x: after graph capture the iteration is physics-bound (~243 of ~370 GPU ms is
+  MuJoCo Warp, which the rules freeze), and checkpoints every 30 s quantize the result
+  (passing one checkpoint earlier would have been 4.19 min, 3.16x). A final round
+  re-weighting linear vs yaw tracking on dev seeds found nothing better, so no second
+  record attempt was made.
+* No candidate considered after the official run was tuned on official seeds.
+* 2 GPUs (stretch): 97.6% throughput scaling; time-to-bar 4.22 min (3 seeds), 1.11x.
+* Not done: pipelined rollouts (overlapping update k with rollout k+1 needs double-buffered
+  weights and storage plus a one-update policy lag; expected gain <= ~20% of the update
+  share), Track B (off-policy) entry.
