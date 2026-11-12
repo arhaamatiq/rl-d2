@@ -65,6 +65,11 @@ class CheckpointWriter:
     self.activation = activation
     self.k = 0
 
+  def stop_requested(self) -> bool:
+    """An external evaluator found a passing checkpoint and asked the run to end
+    (saves GPU time only; time-to-bar is taken from checkpoint timestamps)."""
+    return (self.run_dir / "STOP").exists()
+
   def due(self) -> bool:
     c = self.clock
     ref = c.t_last_ckpt if c.t_last_ckpt is not None else c.t_launch

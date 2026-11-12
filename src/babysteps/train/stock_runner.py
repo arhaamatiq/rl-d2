@@ -161,6 +161,8 @@ class TimedVelocityRunner(VelocityOnPolicyRunner):
         break
       if clock.wall() >= self.harness_budget_s:
         break
+      if ckpt.stop_requested():
+        break
 
     ckpt.write(self.alg.get_policy(), self.current_learning_iteration, env_steps, {"final": True})
     if self.logger.writer is not None:

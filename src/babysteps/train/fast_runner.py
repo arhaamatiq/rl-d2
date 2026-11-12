@@ -195,6 +195,8 @@ class FastTrainer:
         break
       if clock.wall() >= budget_s:
         break
+      if ckpt.stop_requested():
+        break
     ckpt.write(self.alg.get_policy(), it, (it + 1) * steps_per_iter, {"final": True})
 
 
