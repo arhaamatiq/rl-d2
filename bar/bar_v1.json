@@ -1,6 +1,6 @@
 {
   "version": "v1",
-  "frozen": false,
+  "frozen": true,
   "task": {
     "env_source": "mjlab==1.6.0 unitree_g1_flat_env_cfg(play=True)",
     "robot": "G1 humanoid, 29 actuated joints, mjlab asset_zoo",
@@ -147,7 +147,7 @@
     "directions": 8,
     "reps": 2,
     "push_time_s": 6.0,
-    "delta_v_mps": null,
+    "delta_v_mps": 1.25,
     "frame": "horizontal, direction k*45deg relative to robot heading at push time",
     "success": "no fall from push until episode end (20 s)"
   },
@@ -162,13 +162,75 @@
     "success": "no fall for 20 s and mean linear tracking error <= thresholds.sim2sim_lin_err_max"
   },
   "thresholds": {
-    "lin_err_max": null,
-    "yaw_err_max": null,
-    "fall_free_min": null,
-    "push_success_min": null,
-    "sim2sim_lin_err_max": null,
-    "sim2sim_success_min": null
+    "lin_err_max": 0.11,
+    "yaw_err_max": 0.12,
+    "fall_free_min": 0.98,
+    "push_success_min": 0.9,
+    "sim2sim_lin_err_max": 0.165,
+    "sim2sim_success_min": 0.875
   },
   "checkpoint_interval_s": 30.0,
-  "calibration": null
+  "calibration": {
+    "rule": "DECISIONS.md D6",
+    "seeds": [
+      100,
+      101,
+      102
+    ],
+    "reference": "final checkpoint of a 120-minute stock run (3 runs sharing one GPU)",
+    "references": [
+      {
+        "run": "runs/calib/stock_s100",
+        "k": 235,
+        "iteration": 4192,
+        "t_wall_s": 7200.44323849678,
+        "lin_err": 0.0856061652302742,
+        "yaw_err": 0.08433990925550461,
+        "fall_free": 1.0,
+        "push_success": {
+          "0.5": 1.0,
+          "0.75": 1.0,
+          "1.0": 1.0,
+          "1.25": 1.0
+        },
+        "sim2sim_fall_free": 1.0,
+        "sim2sim_lin_err": 0.05817070191450884
+      },
+      {
+        "run": "runs/calib/stock_s101",
+        "k": 235,
+        "iteration": 4209,
+        "t_wall_s": 7200.937922954559,
+        "lin_err": 0.0742228552699089,
+        "yaw_err": 0.08900054544210434,
+        "fall_free": 1.0,
+        "push_success": {
+          "0.5": 0.9921875,
+          "0.75": 1.0,
+          "1.0": 1.0,
+          "1.25": 1.0
+        },
+        "sim2sim_fall_free": 1.0,
+        "sim2sim_lin_err": 0.0570468158712617
+      },
+      {
+        "run": "runs/calib/stock_s102",
+        "k": 235,
+        "iteration": 4226,
+        "t_wall_s": 7200.00256228447,
+        "lin_err": 0.08025036007165909,
+        "yaw_err": 0.09494423866271973,
+        "fall_free": 1.0,
+        "push_success": {
+          "0.5": 1.0,
+          "0.75": 1.0,
+          "1.0": 1.0,
+          "1.25": 1.0
+        },
+        "sim2sim_fall_free": 1.0,
+        "sim2sim_lin_err": 0.05006061262875475
+      }
+    ],
+    "frozen_utc": "2026-11-12T04:00Z"
+  }
 }

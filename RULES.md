@@ -3,7 +3,7 @@
 Babysteps measures **time-to-bar**: wall-clock time from launch to the first saved
 checkpoint that passes a frozen evaluation, on a single RTX 4090.
 
-## The bar (frozen: `bar/bar_v1.json`, sha256 `{{BAR_SHA}}`)
+## The bar (frozen: `bar/bar_v1.json`, sha256 `3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058`)
 
 Task: the G1 humanoid (29 actuated joints) tracking commanded planar velocity and yaw
 rate on flat ground, as defined by mjlab 1.6.0's `Mjlab-Velocity-Flat-Unitree-G1`
@@ -13,11 +13,11 @@ A checkpoint passes when **all** of the following hold:
 
 | check | where | threshold |
 |---|---|---|
-| mean linear-velocity tracking error | GPU, 24 held-out commands x 8 seeded robots, 20 s, after a 2 s settle | <= {{LIN}} m/s |
-| mean yaw-rate tracking error | same episodes | <= {{YAW}} rad/s |
-| fall-free 20 s episodes | same episodes (fall = torso tilt > 70 deg or pelvis < 0.5 m) | >= {{FF}} |
-| push recovery | 8 commands x 8 directions x 2, horizontal kick of {{PUSH_DV}} m/s at t = 6 s | >= {{PUSH}} survive to 20 s |
-| sim-to-sim | same policy in CPU MuJoCo (C engine), nominal model, 8 commands x 2 headings | >= {{S2S}} episodes fall-free with linear error <= {{S2S_LIN}} m/s |
+| mean linear-velocity tracking error | GPU, 24 held-out commands x 8 seeded robots, 20 s, after a 2 s settle | <= 0.11 m/s |
+| mean yaw-rate tracking error | same episodes | <= 0.12 rad/s |
+| fall-free 20 s episodes | same episodes (fall = torso tilt > 70 deg or pelvis < 0.5 m) | >= 0.98 |
+| push recovery | 8 commands x 8 directions x 2, horizontal kick of 1.25 m/s at t = 6 s | >= 0.90 survive to 20 s |
+| sim-to-sim | same policy in CPU MuJoCo (C engine), nominal model, 8 commands x 2 headings | >= 0.875 (14 of 16) episodes fall-free with linear error <= 0.165 m/s |
 
 Held-out commands: 8 structured (stand, forward 0.5 / 1.0, backward 0.5, strafe
 +-0.5, turn +-0.5) and 16 drawn with a fixed seed from the stock training range before

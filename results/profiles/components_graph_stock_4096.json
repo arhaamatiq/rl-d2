@@ -1,0 +1,31 @@
+{
+  "num_envs": 4096,
+  "steps_per_env": 24,
+  "epochs": 5,
+  "minibatches": 4,
+  "rollout_graph_ms": 314.8392333984375,
+  "update_graph_ms": 53.857513427734375,
+  "policy_inference_ms_per_step": 0.14248960018157958,
+  "env_step_ms_per_step": 11.702476501464844,
+  "physics_ms_per_step": 8.11504669189453,
+  "forward_sense_ms_per_step": 1.9665407180786132,
+  "env_managers_ms_per_step": 1.6208890914917,
+  "storage_ms_per_step": 0.0720383882522583,
+  "gae_ms": 0.3535360097885132,
+  "update_fwd_ms": 18.16063995361328,
+  "update_fwd_bwd_ms": 47.70302734375,
+  "update_full_ms": 53.90458984375,
+  "update_forward_loss_ms": 18.16063995361328,
+  "update_backprop_ms": 29.54238739013672,
+  "update_optimizer_ms": 6.201562500000001,
+  "per_iter_ms": {
+    "simulation": 241.95809783935545,
+    "env_managers": 38.901338195800804,
+    "policy_inference": 3.41975040435791,
+    "rollout_storage": 1.7289213180541994,
+    "gae": 0.3535360097885132,
+    "update_forward_loss": 18.16063995361328,
+    "backprop": 29.54238739013672,
+    "optimizer_step": 6.201562500000001
+  }
+}

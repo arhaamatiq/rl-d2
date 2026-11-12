@@ -78,3 +78,16 @@ gdb; driver 595.91, CUDA 13.2). Each graph alone was fine, memory was ample
 changed it. Capturing the update graph first and the rollout graph last is stable at
 8k and 16k envs over 60 alternating iterations including a rollout re-capture, so the
 trainer always uses that order. Root cause not isolated; recorded as an open question.
+
+## D9. Bar v1 frozen (2026-11-12 04:00 UTC, sha256 3a1ee106cfdb...)
+Reference policies (final checkpoints of seeds 100-102, ~4,200 iterations each):
+lin error 0.0856 / 0.0742 / 0.0801 m/s, yaw error 0.0842 / 0.0882 / 0.0951 rad/s, all
+fall-free, all 16/16 on sim-to-sim, push survival >= 0.99 at every candidate strength.
+Rule output: lin <= 0.11, yaw <= 0.12, fall-free >= 0.98, push 1.25 m/s with >= 90%
+survival, sim-to-sim lin <= 0.165 with >= 14/16.
+Observations recorded, bar left unchanged (changing it now would be tuning after seeing
+data): (a) every reference survived even the largest candidate push, so the push check is
+the least discriminating of the five at convergence; it still bites early in training;
+(b) on flat ground the two initial headings of the sim-to-sim check give identical CPU
+trajectories, so its 16 episodes are effectively 8 distinct ones. Both are candidates
+for a v2 bar, which would be versioned and never applied retroactively.
