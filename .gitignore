@@ -12,3 +12,4 @@ videos/*.mp4
 !results/**
 .DS_Store
 bar/sim2sim/*.mjb
+results/dev/
