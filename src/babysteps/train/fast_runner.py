@@ -44,7 +44,18 @@ class FastTrainer:
     self.clock = clock
     env_cfg, agent_cfg = recipe.env_cfg, recipe.agent_cfg
     self.N = env_cfg.scene.num_envs
+    self.preload = []
+    if opts.get("parallel_compile"):
+      import mujoco_warp  # noqa: F401  (registers its kernel modules)
+
+      from babysteps.systems.warp_preload import preload
+
+      self.preload.append(preload(device))
+      clock.mark("warp_preload_1")
     self.genv = GraphedEnv(env_cfg, self.N, device=device)
+    if opts.get("parallel_compile"):
+      self.preload.append(preload(device))
+      clock.mark("warp_preload_2")
     clock.mark("env_built")
     env = self.genv.env
     self.T = agent_cfg.num_steps_per_env
