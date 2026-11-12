@@ -1,0 +1,22 @@
+{
+  "run_dir": "runs/ddp_official/track_a_2gpu_s0",
+  "bar_version": "v1",
+  "bar_sha256": "3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058",
+  "frozen": true,
+  "n_evaluated": 8,
+  "eval_wall_s": 56.3412926197052,
+  "passed": true,
+  "first_pass_k": 7,
+  "time_to_bar_s": 253.3941445350647,
+  "time_to_bar_train_s": 211.93857288360596,
+  "iteration": 520,
+  "env_steps": 51216384,
+  "metrics": {
+    "lin_err": 0.0951080396771431,
+    "yaw_err": 0.1132056787610054,
+    "fall_free": 1.0,
+    "push_success": 0.9921875,
+    "sim2sim_success": 0.875,
+    "sim2sim_lin_err": 0.08825031213369114
+  }
+}

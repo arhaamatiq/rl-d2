@@ -1,0 +1,22 @@
+{
+  "run_dir": "runs/ablation/abl_kl02_sym_e8_s1",
+  "bar_version": "v1",
+  "bar_sha256": "3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058",
+  "frozen": true,
+  "n_evaluated": 18,
+  "eval_wall_s": 113.51678133010864,
+  "passed": true,
+  "first_pass_k": 14,
+  "time_to_bar_s": 464.5450053215027,
+  "time_to_bar_train_s": 423.920047044754,
+  "iteration": 930,
+  "env_steps": 91521024,
+  "metrics": {
+    "lin_err": 0.07394599914550781,
+    "yaw_err": 0.11144237965345383,
+    "fall_free": 1.0,
+    "push_success": 0.9921875,
+    "sim2sim_success": 1.0,
+    "sim2sim_lin_err": 0.04732745216310656
+  }
+}

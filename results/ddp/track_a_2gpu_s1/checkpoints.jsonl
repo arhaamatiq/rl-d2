@@ -1,0 +1,14 @@
+{"k": 0, "iteration": 0, "env_steps": 98304, "t_wall_s": 41.92697811126709, "t_train_s": 0.3517613410949707, "path": "checkpoints/policy_0000.pt"}
+{"k": 1, "iteration": 76, "env_steps": 7569408, "t_wall_s": 72.07492804527283, "t_train_s": 30.499711275100708, "path": "checkpoints/policy_0001.pt"}
+{"k": 2, "iteration": 148, "env_steps": 14647296, "t_wall_s": 102.41219735145569, "t_train_s": 60.83698058128357, "path": "checkpoints/policy_0002.pt"}
+{"k": 3, "iteration": 221, "env_steps": 21823488, "t_wall_s": 132.77914953231812, "t_train_s": 91.203932762146, "path": "checkpoints/policy_0003.pt"}
+{"k": 4, "iteration": 295, "env_steps": 29097984, "t_wall_s": 162.90222263336182, "t_train_s": 121.3270058631897, "path": "checkpoints/policy_0004.pt"}
+{"k": 5, "iteration": 370, "env_steps": 36470784, "t_wall_s": 193.18101501464844, "t_train_s": 151.60579824447632, "path": "checkpoints/policy_0005.pt"}
+{"k": 6, "iteration": 444, "env_steps": 43745280, "t_wall_s": 223.18929767608643, "t_train_s": 181.6140809059143, "path": "checkpoints/policy_0006.pt"}
+{"k": 7, "iteration": 518, "env_steps": 51019776, "t_wall_s": 253.27383470535278, "t_train_s": 211.69861793518066, "path": "checkpoints/policy_0007.pt"}
+{"k": 8, "iteration": 592, "env_steps": 58294272, "t_wall_s": 283.46980905532837, "t_train_s": 241.89459228515625, "path": "checkpoints/policy_0008.pt"}
+{"k": 9, "iteration": 666, "env_steps": 65568768, "t_wall_s": 313.71432304382324, "t_train_s": 272.1391062736511, "path": "checkpoints/policy_0009.pt"}
+{"k": 10, "iteration": 740, "env_steps": 72843264, "t_wall_s": 344.0935790538788, "t_train_s": 302.51836228370667, "path": "checkpoints/policy_0010.pt"}
+{"k": 11, "iteration": 814, "env_steps": 80117760, "t_wall_s": 374.49247217178345, "t_train_s": 332.9172554016113, "path": "checkpoints/policy_0011.pt"}
+{"k": 12, "iteration": 888, "env_steps": 87392256, "t_wall_s": 404.83559918403625, "t_train_s": 363.26038241386414, "path": "checkpoints/policy_0012.pt"}
+{"k": 13, "iteration": 925, "env_steps": 91029504, "t_wall_s": 420.027384519577, "t_train_s": 378.4521677494049, "path": "checkpoints/policy_0013.pt", "final": true}

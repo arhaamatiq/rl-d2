@@ -1,0 +1,22 @@
+{
+  "run_dir": "runs/live/stock_s3",
+  "bar_version": "v1",
+  "bar_sha256": "3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058",
+  "frozen": true,
+  "n_evaluated": 4,
+  "eval_wall_s": 73.1033866405487,
+  "passed": true,
+  "first_pass_k": 30,
+  "time_to_bar_s": 946.8996388912201,
+  "time_to_bar_train_s": 909.7185237407684,
+  "iteration": 1662,
+  "env_steps": 163479552,
+  "metrics": {
+    "lin_err": 0.08889392763376236,
+    "yaw_err": 0.10645150393247604,
+    "fall_free": 1.0,
+    "push_success": 1.0,
+    "sim2sim_success": 1.0,
+    "sim2sim_lin_err": 0.06391173804422004
+  }
+}

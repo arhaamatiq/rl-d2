@@ -86,7 +86,27 @@ Recipe (still PPO, same task, same evaluation): KL target 0.01 -> 0.02, left-rig
 symmetry augmentation of the actor loss (mirror map verified against physics),
 8 epochs instead of 5, yaw-rate tracking reward weight 2 -> 4.
 
-{{ABLATION_TABLE}}
+### Ablation: what each change bought
+
+Cumulative, top to bottom; cold start, same host class (RTX 4090 + Ryzen 9 7950X). Rows 0
+and 6 are the official 5-seed results; middle rows use seeds 0-2 (some ran two per
+2-GPU host with separate compilation caches, see `DECISIONS.md` D12).
+
+| # | change (cumulative) | seeds | time-to-bar, median [IQR] (min) | iterations to bar | s / iteration | startup (s) |
+|---|---|---|---|---|---|---|
+| 0 | stock mjlab PPO (T0) | 0-4 | **13.26** [12.77, 15.78] | 1432 | 0.527 | 38 |
+| 1 | + rollout and PPO update as CUDA graphs (same hyperparameters) | 0-2 | **9.75** [9.49, 9.84] (1.36x) | 1426 | 0.375 | 42 |
+| 2 | + KL target 0.01 -> 0.02 | 0-2 | **10.21** [9.73, 10.46] (0.96x) | 1525 | 0.375 | 39 |
+| 3 | + left-right symmetry augmentation | 0-2 | **9.20** [8.45, 9.71] (1.11x) | 1273 | 0.399 | 39 |
+| 4 | + 8 PPO epochs (was 5) | 0-2 | **7.74** [7.48, 8.50] (1.19x) | 930 | 0.454 | 41 |
+| 5 | + bf16 autocast in the update | 0-2 | **7.20** [6.95, 7.23] (1.07x) | 980 | 0.399 | 38 |
+| 6 | + yaw-rate tracking weight 2 -> 4 (= Track A) | 0-4 | **4.69** [4.69, 4.80] (1.53x) | 601 | 0.401 | 40 |
+
+Row 1 is pure systems work: identical learning per iteration (1,426 vs 1,432 iterations),
+29% less time per iteration. Rows 2-6 trade more work per iteration for far fewer
+iterations; the yaw weight matters most because yaw-rate error is the check that gates
+passing for every recipe (most of it is gait-induced pelvis yaw oscillation, measured at
+50 Hz). KL 0.02 alone is neutral here but is part of the combination that won on dev seeds.
 
 What did not help (dev seeds, details in `DECISIONS.md` D11): 8k envs, 12 steps/env,
 tighter tracking kernels (they trade turning for linear precision), turn-in-place
@@ -98,7 +118,16 @@ sparser training pushes, eager parallel Warp compilation (breaks mjlab's own cap
 ## Multi-GPU
 
 The graphed trainer also runs data-parallel (`torchrun`, NCCL all-reduce of gradients and
-of the adaptive-LR KL captured inside the update graph). {{DDP_SECTION}}
+of the adaptive-LR KL captured inside the update graph). On 2x RTX 4090 (PCIe, same host
+class), Track A with 4096 envs per GPU:
+
+| | time-to-bar, median [IQR] | iterations to bar | s / iteration | throughput scaling |
+|---|---|---|---|---|
+| 1 GPU (official, 5 seeds) | 4.69 min [4.69, 4.80] | 601 | 0.399 | 1x |
+| 2 GPUs (3 seeds) | 4.22 min [3.97, 4.22] | 518 | 0.408 | **97.6%** efficiency |
+
+Throughput scales almost perfectly; time-to-bar improves only 1.11x because PPO turns a
+doubled batch into far fewer than half the iterations. Track A records stay single-GPU.
 
 ## Reproduce
 

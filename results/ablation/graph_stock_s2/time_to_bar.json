@@ -1,0 +1,22 @@
+{
+  "run_dir": "runs/ablation/graph_stock_s2",
+  "bar_version": "v1",
+  "bar_sha256": "3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058",
+  "frozen": true,
+  "n_evaluated": 24,
+  "eval_wall_s": 135.87927865982056,
+  "passed": true,
+  "first_pass_k": 18,
+  "time_to_bar_s": 595.5731971263885,
+  "time_to_bar_train_s": 543.7410552501678,
+  "iteration": 1426,
+  "env_steps": 140279808,
+  "metrics": {
+    "lin_err": 0.10262864083051682,
+    "yaw_err": 0.11793885380029678,
+    "fall_free": 1.0,
+    "push_success": 0.9765625,
+    "sim2sim_success": 0.875,
+    "sim2sim_lin_err": 0.06977012562264928
+  }
+}

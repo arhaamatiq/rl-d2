@@ -1,0 +1,22 @@
+{
+  "run_dir": "runs/live/stock_s0",
+  "bar_version": "v1",
+  "bar_sha256": "3a1ee106cfdb7e13755985a06bf7f3a1fe7e17be33249b6ee84fed5cc2bc3058",
+  "frozen": true,
+  "n_evaluated": 4,
+  "eval_wall_s": 101.49786853790283,
+  "passed": true,
+  "first_pass_k": 34,
+  "time_to_bar_s": 1083.2738361358643,
+  "time_to_bar_train_s": 1033.622714996338,
+  "iteration": 1705,
+  "env_steps": 167706624,
+  "metrics": {
+    "lin_err": 0.09830626100301743,
+    "yaw_err": 0.11023670434951782,
+    "fall_free": 1.0,
+    "push_success": 1.0,
+    "sim2sim_success": 1.0,
+    "sim2sim_lin_err": 0.07325205178870162
+  }
+}
